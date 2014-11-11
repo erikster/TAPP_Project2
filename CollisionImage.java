@@ -4,7 +4,6 @@
  * Handles collision-detection for a StellarObject
  *
  * Author: Wesley Gydé
- *
  */
 
 import java.util.HashSet;
@@ -98,8 +97,12 @@ public class CollisionImage{
 		g.draw( shape_container.val, fill ); //For some reason, using a fill is faster than g.setColor().
 	}
 
-	public void setFill(ShapeFill f){
-		fill = f;
+	/** Sets the color used to draw this (see render() ). */
+	public void setColor(Color c){
+		fill = new GradientFill(
+		   0.0f,   0.0f, c,
+		   1.0f,   1.0f, c
+		);
 	}
 
 }
