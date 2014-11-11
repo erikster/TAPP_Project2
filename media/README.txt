@@ -1,0 +1,1 @@
+This folder holds all the related music and image files.

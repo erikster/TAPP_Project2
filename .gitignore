@@ -1,5 +1,40 @@
+<<<<<<< HEAD
 *.jar
 *.dll
 *.dylib
 *.so
 *.jnilib
+=======
+#################
+## Eclipse
+#################
+
+*.pydevproject
+.project
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+#####################################
+## Hide Java .class and .jar files
+#####################################
+
+*.class
+*.jar
+
+#####################################
+## Hide .dll, .dylib, .so files
+#####################################
+
+*.dll
+*.dylib
+*.so
+>>>>>>> 8c21171917abcafb563ba71f45c6ea5c917f0495
