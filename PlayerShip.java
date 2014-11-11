@@ -1,7 +1,9 @@
 /**
+ * PlayerShip.java
  *
+ * A ship, controlled by the player (via the arrow keys)
  *
- *
+ * Author: Wesley Gydé
  */
 
 import org.newdawn.slick.GameContainer;
