@@ -173,6 +173,12 @@ public abstract class Physics{
 	//--| Access Methods |--
 	//----------------------
 	
+	/** Returns a copy of the centroid's position vector */
+	public Vector2f getPosition(){return new Vector2f(centroid_pos);}
+
+	/** Returns the centroid's current rotation */
+	public float getRotation(){return centroid_rot;}
+
 	/** Returns cimg, as it was passed to the constructor */
 	public CollisionImage getCImg(){return cimg;}
 
