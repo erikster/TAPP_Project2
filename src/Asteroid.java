@@ -14,37 +14,57 @@
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.*;
 
 public class Asteroid extends StellarObject {
-	private Physics phys;
 	
 	/// Constructors
 	/**
 	 * Constructor
 	 *
 	 */
-	public PlayerShip(Physics phys, Input input) {
-		this.phys = phys;
-		this.input = input;
+	public Asteroid(Physics phys) {
+		super(phys);
+	}
+	
+	public static Asteroid makeAsteroid(float x, float y) {
+		//make centroid
+		Vector2f centroid = new Vector2f(x, y);
+
+		//make cimg
+		_AsteroidCollider ac = new _AsteroidCollider();
+		Circle cir = new Circle(x, y, 20f);
+		
+		CollisionImage cimg = new CollisionImage(cir, ac);
+		GraphicalImage gimg = new GraphicalImage(cir);
+
+		//make the Asteroid
+		Asteroid as = new Asteroid(new _AsteroidPhysics(centroid, cimg, gimg));
+
+		//close circular references
+		ac.ast = as;
+
+		return as;
 	}
 	
 	/// Methods
-	/**
-	 * Updates its own state
-	 * throws a SlickException
-	 */
-	@Override
-	public void update(GameContainer gc, int time_passed_ms) throws SlickException {
-		
+	
+	private static class _AsteroidPhysics extends Physics {
+		public _AsteroidPhysics(
+		Vector2f centroid,
+		CollisionImage cimg,
+		GraphicalImage gimg
+		){
+			super(centroid, 0f, cimg, gimg);
+		}
 	}
 	
-	/**
-	 * Draws itself
-	 * throws a SlickException
-	 */ 
-	@Override
-	public void render(GameContainer gc, Graphics g) {
+	private static class _AsteroidCollider extends Collider{
+	
+		public Asteroid ast;
 		
+		@Override
+		public void collide(Collider c) { }
+
 	}
 }

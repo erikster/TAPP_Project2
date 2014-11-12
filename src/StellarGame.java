@@ -13,8 +13,8 @@
  */
 
 import org.newdawn.slick.*;
-import org.newdawn.geom.*;
-import org.newdawn.fills.*;
+import org.newdawn.slick.geom.*;
+import org.newdawn.slick.fills.*;
 
 public class StellarGame extends BasicGame {
 	/// fields
@@ -25,9 +25,9 @@ public class StellarGame extends BasicGame {
 	 * Constructor, takes a string for the game's name
 	 * "initializes" gameWorld so init can load all the stuff we need
 	 */
-	public FugitiveGame(String gamename) {
+	public StellarGame(String gamename) {
 		super(gamename);
-		this.gameWorld = new World();
+		this.gameWorld = null;
 	}
 	
 	/// methods
@@ -39,7 +39,7 @@ public class StellarGame extends BasicGame {
 	 */
 	@Override
 	public void init(GameContainer gc) throws SlickException { 
-		
+		gameWorld = new World();
 	}
 	
 	/**

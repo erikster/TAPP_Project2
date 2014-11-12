@@ -9,7 +9,9 @@
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.SlickException;
 
 public class PlayerShip extends StellarObject{
 	
@@ -32,7 +34,7 @@ public class PlayerShip extends StellarObject{
 		//make cimg
 		_PlayerCollider pc = new _PlayerCollider();
 		Polygon pol = new Polygon(new float[]{
-			x   , y+5f,
+			x   , y+7f,
 			x+5f, y-5f,
 			x-5f, y-5f
 			});
@@ -56,8 +58,9 @@ public class PlayerShip extends StellarObject{
 	/** Performs framewise updates; should be propegated from the base Slick2D game object */
 	@Override
 	public void update(GameContainer gc, int time_passed_ms){
-		if (hp <= 0){
-			destroy();
+		if (hp <= 0) {
+			// got a different idea for now
+			// destroy(); 
 		}
 
 		Input in = gc.getInput();
@@ -72,6 +75,8 @@ public class PlayerShip extends StellarObject{
 		}
 		super.update(gc, time_passed_ms);
 	}
+	
+	public int getHP() { return hp; }
 
 	//---------------
 	//--| Physics |--

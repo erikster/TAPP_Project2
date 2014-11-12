@@ -21,7 +21,7 @@ public class Launch {
 	public static void main(String[] args) {
 		try {
 			AppGameContainer agc = new AppGameContainer(
-				new FugitiveGame("Stellar Fugitive")
+				new StellarGame("Stellar Fugitive")
 				);
 			agc.setDisplayMode(640, 480, false);
 			agc.setTargetFrameRate(60);
