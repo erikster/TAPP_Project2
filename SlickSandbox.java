@@ -146,8 +146,13 @@ public class SlickSandbox extends BasicGame
 		killbox.render(gc, g);
 
 		if (!firstkey){
-			g.drawString("Move with the arrow keys\nShapes light up on collision\n- Press any key -", 200, 100);
+			g.drawString("Move with the arrow keys\nShapes light up on collision\nPurple box kills you (unfinished)\n- Press any key -", 200, 100);
 		}
+	}
+
+	@Override
+	public void keyPressed(int key, char c){
+		firstkey = true;
 	}
 
 	public static void main(String[] args)
