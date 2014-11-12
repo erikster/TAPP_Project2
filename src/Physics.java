@@ -6,11 +6,7 @@
  *    - collision detection (see CollisionImage.java)
  *    - graphical representation (see GraphicalImage.java)
  *
- * //FIXME: after GraphicalImage is implemented, run ":%s/\/\/GIMG//g" and fix all relevant fixmes.
- *
- * Author: Wesley Gydé
  */
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Shape;
@@ -20,97 +16,105 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 //DEBUG imports
-import org.newdawn.slick.Color;
-import org.newdawn.slick.ShapeFill;
-import org.newdawn.slick.fills.GradientFill;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.fills.GradientFill;
 
-public class Physics{
+public abstract class Physics{
 
 	//position
-	private Vector2f position;
-	private float theta;
+	private Vector2f centroid_pos;
+	private float centroid_rot;
 
 	//motion
 	private Vector2f velocity;
-	private float dtheta;
+	private float drot;
 
 	//cimg and gimg
 	private CollisionImage cimg;
-	//GIMGprivate GraphicalImage gimg;
+	private GraphicalImage gimg;
 
 	//------------------
 	//--| 'structors |--
 	//------------------
-	
+
 	/**
 	 * Constructor
-	 *
-	 * @param centroid A base-location at which this will be created
+	 * 
+	 * @param centroid A point representing the object's centroid; used as a point of reference in construction, a center of mass in "Physics Logic", and likewise in other places.
+	 * @param centroid_rot (optional) Specifies an initial rotation for the centroid.
+	 * @param cimg A collision image, which detects and handles collisions with other Physics instances.
+	 * @param gimg A graphical image, responsible for drawing this Physics instance on the screen.
 	 */
 	public Physics(
-		Shape collision_mask,
-		Collider collider,
-		Vector2f position//GIMG,
-		//GIMG//FIXME: gimg args
+		Vector2f centroid,
+		CollisionImage cimg,
+		GraphicalImage gimg
 		){
+		this(centroid, 0f, cimg, gimg);
+	}
+	public Physics(
+		Vector2f centroid,
+		float centroid_rot,
+		CollisionImage cimg,
+		GraphicalImage gimg
+		){
+		this.cimg = cimg;
+		this.gimg = gimg;
+		centroid_pos = centroid;
+		this.centroid_rot = centroid_rot;
 
-		cimg = new CollisionImage( collision_mask, collider );
-		//GIMGgimg = new GraphicalImage(); //FIXME: make a gimg with gimg args
-
-		this.position = new Vector2f(position);
-		theta = 0f;
 		velocity = new Vector2f(0f, 0f);
-		dtheta = 0f;
+		drot = 0f;
+	}
 
+	/** Destroys this, removing it from any/all push-notification systems */
+	public void destroy(){
+		cimg.destroy();
 	}
 
 	//---------------------
 	//--| Physics Logic |--
 	//---------------------
-
+	
 	/**
-	 * Adds the input dx and dy to the stored velocity
-	 *
-	 * @param dx The change in velocity (x)
-	 * @param dy The change in velocity (y)
-	 */
-	public void impartVelocity(float dx, float dy){
-		velocity.x += dx;
-		velocity.y += dy;
-	}
-
-	/**
-	 * Adds the input vector to the stored velocity
-	 *
-	 * @param dv The change in velocity
-	 */
-	public void impartVelocity(Vector2f dv){
-		impartVelocity(dv.getX(), dv.getY());
-	}
-
-	/**
+	 * Rotates this by dtheta degrees. Rotation is done once, not per-frame.
+	 * dtheta is a change in rotational position, not rotational velocity.
 	 * 
+	 * @param drot The change in rotational position (radians)
 	 */
-	public void impartForwardVelocity(float dx, float dy){
-		impartVelocity( 
-			(float)(dx*Math.cos(theta) - dy*Math.sin(theta)),
-			(float)(dx*Math.sin(theta) + dy*Math.cos(theta))
+	public void rotate(float drot){
+		assert (drot >= 0) && (drot <= float2pi);
+
+		this.drot = restrictAngle(this.drot + drot);
+	}
+
+	/**
+	 * Accelerates this - that is, changes its velocity by the input amount.
+	 *
+	 * @param dvx The change in velocity (x)
+	 * @param dvy The change in velocity (y)
+	 */
+	public void accelerate(float dvx, float dvy){
+		velocity.x += dvx;
+		velocity.y += dvy;
+	}
+	
+
+	/**
+	 * Imparts the input velocity, rotated such that ĵ aligns with the rotation of the centroid
+	 *
+	 * @param dvs The change in velocity (sideways/strafing - 90degrees counter-colockwise from centroid's rotation)
+	 * @param dvf The change in velocity (forwards - aligned with centroid's rotation)
+	 */
+	public void accelerateAligned(float dvs, float dvf){
+		accelerate( 
+			(float)(dvs*Math.cos(centroid_rot) - dvf*Math.sin(centroid_rot)),
+			(float)(dvs*Math.sin(centroid_rot) + dvf*Math.cos(centroid_rot))
 			);
 	}
 
-	/**
-	 * Adds the input dtheta to the stored rotation angle.
-	 *
-	 * @param dtheta The change in rotation; must be in the range 
-	 */
-	public void rotate(float dtheta){
-		assert (dtheta >= 0) && (dtheta <= float2pi);
-
-		this.dtheta = restrictAngle(this.dtheta + dtheta);
-	}
-
-	/** Returns theta as an angle in the range [0,2π]*/
+	/** Returns theta as an angle in the range [0,2π] */
 	private float restrictAngle(float theta){
 		while (theta > float2pi) {
 			theta -= float2pi;
@@ -121,39 +125,36 @@ public class Physics{
 		return theta;
 	}
 	private static final float float2pi = (float)Math.PI * 2f;
-
+	
 	//---------------
 	//--| Updates |--
 	//---------------
 
 	/** Performs framewise updates; should be propegated from the base Slick2D game object */
-	public void update(GameContainer gc, int time_passed_ms) throws SlickException {
-
-		//update poisition ("centroid")
-		position = position.add(velocity);
-		theta = restrictAngle(theta + dtheta);
+	public void update(GameContainer gc, int time_passed_ms){
+		//update poisition (centroid)
+		centroid_pos = centroid_pos.add(velocity);
+		centroid_rot = restrictAngle(centroid_rot + drot);
 
 		//update gimg and cimg
 		Transform motion_t = ( new Transform() )
-			.concatenate(Transform.createRotateTransform( dtheta, position.getX(), position.getY() )
+			.concatenate(Transform.createRotateTransform( drot, centroid_pos.getX(), centroid_pos.getY() )
 			.concatenate(Transform.createTranslateTransform( velocity.getX(), velocity.getY() )
 			));
 		cimg.transform(motion_t);
-		//GIMGgimg.transform(t);
+		gimg.transform(motion_t);
 
 		//update motion (friction, etc.)
-		dtheta = 0f;
-
+		drot = 0f;
 	}
 
 	/** Performs graphical updates; should be propegated from the base Slick2D game object */
-	public void render(GameContainer gc, Graphics g) throws SlickException {
-
+	public void render(GameContainer gc, Graphics g) throws SlickException{
 		//DEBUG - draw centroid
 		g.draw(
 			new Rectangle(
-				position.x - 1f,
-				position.y - 1f,
+				centroid_pos.x - 1f,
+				centroid_pos.y - 1f,
 				2f,
 				2f
 			),
@@ -163,15 +164,17 @@ public class Physics{
 			));
 
 		cimg.render(gc, g); //DEBUG - should be propegated from gimg, if it is called at all
-		//GIMGgimg.render(gc, g);
-		
+		gimg.render(gc, g);
 	}
 
 	//----------------------
 	//--| Access Methods |--
 	//----------------------
-
+	
+	/** Returns cimg, as it was passed to the constructor */
 	public CollisionImage getCImg(){return cimg;}
-	//GIMGpublic GraphicalImage getGImg(){return gimg;}
+
+	/** Returns gimg, as it was passed to the constructor */
+	public GraphicalImage getGImg(){return gimg;}
 
 }

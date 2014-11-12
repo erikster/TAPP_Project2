@@ -50,7 +50,7 @@ public class SlickSandbox extends BasicGame
 			);
 
 	//Test objects
-	Physics p;
+	PlayerShip p;
 	HashSet<Character> keys_pressed = new HashSet<Character>();
 
 	ArrayList<CollisionImage> cimgs = new ArrayList<CollisionImage>();
@@ -70,7 +70,7 @@ public class SlickSandbox extends BasicGame
 				B bb = b1;
 				@Override
 				public void render(GameContainer gc, Graphics g) throws SlickException{
-					super.setFill( bb.b?fillRed:fillBlue );
+					super.setColor( bb.b?Color.red:Color.blue );
 					super.render(gc, g);
 					bb.b = false;
 				}
@@ -79,6 +79,15 @@ public class SlickSandbox extends BasicGame
 		cimgs.add(cimg);
 
 	}
+
+	boolean killbox_activated = false;
+	CollisionImage killbox = new CollisionImage(
+		new Rectangle(50,50,15,15),
+		new Collider(){
+			@Override
+			public void collide(Collider c){c.inflictDamage(1); killbox_activated = true;}
+			}
+		);
 
 	boolean firstkey = false;
 
@@ -91,16 +100,8 @@ public class SlickSandbox extends BasicGame
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-		Collider c = new Collider(){
-			};
-		Vector2f pos = new Vector2f(100f,100f);
-		Shape s = new Polygon( new float[]{
-			pos.getX(), pos.getY() + 5f,
-			pos.getX() + 5f, pos.getY() - 5f,
-			pos.getX() - 5f, pos.getY() - 5f,
-			});
-		p = new Physics(s,c,pos);
-		p.getCImg().addTo(cl);
+		p = PlayerShip.makeShip(100f, 100f);
+		p.getPhys().getCImg().addTo(cl);
 		addShape(new Rectangle(200f,200f,40f,40f));
 		addShape(new Rectangle(100f,200f,50f,150f));
 		addShape(new Ellipse(250,375,50,70));
@@ -112,38 +113,40 @@ public class SlickSandbox extends BasicGame
 			490,330,
 			430,340,
 			400,350,
-            400,300,
+			400,300,
 			430,330,
 			480,300
 			}));
+		killbox.setColor(Color.magenta);
+		killbox.addTo(cl);
 	}
 
 	@Override
 	public void update(GameContainer gc, int time_passed_ms) throws SlickException {
-		if (keys_pressed.contains('w')){
-			p.impartForwardVelocity(0f,.05f);
-		}
-		if (keys_pressed.contains('a')){
-			p.rotate(-.05f);
-		}
-		if (keys_pressed.contains('d')){
-			p.rotate(.05f);
-		}
-
 		p.update(gc, time_passed_ms);
 
 		cl.notifyCollisions();
 	}
 
 	@Override
-	public void render(GameContainer gc, Graphics g) throws SlickException{
+	public void render(GameContainer gc, Graphics g) throws SlickException {
+		float midx = p.getPhys().getGImg().getMidX();
+		float midy = p.getPhys().getGImg().getMidY();
+		g.translate(-midx + 320, -midy + 240);
 		p.render(gc, g);
 		for (CollisionImage cimg : cimgs){
 			cimg.render(gc, g);
 		}
-		if (!firstkey){
-			g.drawString("Move w/ WASD\nShapes light up on collision\n- Press any key -", 200, 100);
+
+		if (killbox_activated){
+			killbox.setColor(Color.darkGray);
 		}
+		killbox.render(gc, g);
+
+		if (!firstkey){
+			g.drawString("Move with the arrow keys\nShapes light up on collision\n- Press any key -", 200, 100);
+		}
+		g.translate(midx - 320, midy - 240);
 	}
 
 	@Override
@@ -165,7 +168,7 @@ public class SlickSandbox extends BasicGame
 			AppGameContainer appgc;
 			appgc = new AppGameContainer(new SlickSandbox("PHYSICS DEMO 1.0"));
 			appgc.setDisplayMode(640, 480, false);
-            appgc.setTargetFrameRate(60);
+			appgc.setTargetFrameRate(60);
 			appgc.start();
 		}
 		catch (SlickException ex)

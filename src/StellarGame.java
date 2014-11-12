@@ -12,10 +12,9 @@
  * Last Updated: 2014-Nov-9 by Erik Steringer
  */
 
-import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
+import org.newdawn.geom.*;
+import org.newdawn.fills.*;
 
 public class StellarGame extends BasicGame {
 	/// fields
@@ -28,7 +27,7 @@ public class StellarGame extends BasicGame {
 	 */
 	public FugitiveGame(String gamename) {
 		super(gamename);
-		this.gameWorld = null;
+		this.gameWorld = new World();
 	}
 	
 	/// methods
@@ -39,20 +38,26 @@ public class StellarGame extends BasicGame {
 	 * Throws a SlickException
 	 */
 	@Override
-	public void init(GameContainer gc) throws SlickException { }
+	public void init(GameContainer gc) throws SlickException { 
+		
+	}
 	
 	/**
 	 * Updates our game's state
 	 * Throws a SlickException
 	 */
 	@Override
-	public void update(GameContainer gc, int i) throws SlickException { }
+	public void update(GameContainer gc, int i) throws SlickException { 
+		gameWorld.update(gc, i);
+	}
 	
 	/**
 	 * Renders our game onto the screen
 	 * Throws a SlickException
 	 */
 	@Override
-	public void render(GameContainer gc, Graphics g) throws SlickException { }
+	public void render(GameContainer gc, Graphics g) throws SlickException { 
+		gameWorld.render(gc, g);
+	}
 	
 }

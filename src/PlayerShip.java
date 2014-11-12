@@ -1,54 +1,104 @@
 /**
  * PlayerShip.java
  *
- * A class to represent the main player
- * 
- * Functionalities include:
- *    - graphical representation
- *    - self state update
- *    - taking and using input
- * 
- * Author:       Erik Steringer
- * Last Updated: 2014-Nov-9 by Erik Steringer
+ * A ship, controlled by the player (via the arrow keys)
+ *
+ * Author: Wesley Gydé
  */
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Polygon;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 
-public class PlayerShip extends StellarObject {
+public class PlayerShip extends StellarObject{
 	
-	/// Fields
-	private Input input;
-	private Physics phys;
-	
-	/// Constructors
-	/**
-	 * Constructor
-	 *
-	 */
-	public PlayerShip(Phys phys, Input input) {
-		this.phys = phys;
-		this.input = input;
+	private static final float THRUSTER_ACCELERATION = .05f; //thruster acceleration in px/frame^2
+	private static final float ROTATION = .05f; //rotational displacement in rad/frame
+	protected int hp = 1;
+
+	//------------------
+	//--| 'structors |--
+	//------------------
+
+	private PlayerShip(Physics phys){
+		super(phys);
 	}
-	
-	/// Methods
-	/**
-	 * Updates its own state
-	 * throws a SlickException
-	 */
+
+	public static PlayerShip makeShip(float x, float y){
+		//make centroid
+		Vector2f centroid = new Vector2f(x, y);
+
+		//make cimg
+		_PlayerCollider pc = new _PlayerCollider();
+		Polygon pol = new Polygon(new float[]{
+			x   , y+5f,
+			x+5f, y-5f,
+			x-5f, y-5f
+			});
+		CollisionImage cimg = new CollisionImage(pol, pc);
+
+		GraphicalImage gimg = new GraphicalImage(pol);
+
+		//make the PlayerShip
+		PlayerShip ps = new PlayerShip(new _PlayerShipPhysics(centroid, cimg, gimg));
+
+		//close circular references
+		pc.ps = ps;
+
+		return ps;
+	}
+
+	//---------------
+	//--| Updates |--
+	//---------------
+
+	/** Performs framewise updates; should be propegated from the base Slick2D game object */
 	@Override
-	public void update(GameContainer gc, int time_passed_ms) throws SlickException {
-	
+	public void update(GameContainer gc, int time_passed_ms){
+		if (hp <= 0){
+			destroy();
+		}
+
+		Input in = gc.getInput();
+		if (in.isKeyDown(Input.KEY_LEFT)){
+			getPhys().rotate(-ROTATION);
+		}
+		if (in.isKeyDown(Input.KEY_RIGHT)){
+			getPhys().rotate(ROTATION);
+		}
+		if (in.isKeyDown(Input.KEY_UP)){
+			getPhys().accelerateAligned(0f, THRUSTER_ACCELERATION);
+		}
+		super.update(gc, time_passed_ms);
+	}
+
+	//---------------
+	//--| Physics |--
+	//---------------
+
+	private static class _PlayerShipPhysics extends Physics{
+		public _PlayerShipPhysics(
+		Vector2f centroid,
+		CollisionImage cimg,
+		GraphicalImage gimg
+		){
+			super(centroid, 0f, cimg, gimg);
+		}
 	}
 	
-	/**
-	 * Draws itself
-	 * throws a SlickException
-	 */ 
-	@Override
-	public void render(GameContainer gc, Graphics g) {
-	
+	private static class _PlayerCollider extends Collider{
+		
+		public PlayerShip ps;
+
+		@Override
+		public void collide(Collider c){}
+
+		@Override
+		public void inflictDamage(int dam){
+			ps.hp -= dam;
+		}
+
 	}
+
 }

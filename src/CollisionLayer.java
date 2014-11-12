@@ -13,9 +13,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import org.newdawn.slick.geom.Shape;
 
-//Sandbox Imports
-import org.newdawn.slick.geom.Rectangle;
-
 public class CollisionLayer{
 	
 	private class ShapeCollider{

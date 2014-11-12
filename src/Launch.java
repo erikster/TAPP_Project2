@@ -24,6 +24,7 @@ public class Launch {
 				new FugitiveGame("Stellar Fugitive")
 				);
 			agc.setDisplayMode(640, 480, false);
+			agc.setTargetFrameRate(60);
 			agc.start();
 		} catch (SlickException ex) {
 			ex.printStackTrace();
