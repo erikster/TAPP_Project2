@@ -124,11 +124,8 @@ public class SlickSandbox extends BasicGame
 		killbox.addTo(cl);
 	}
 
-	int iters = 2000;
 	@Override
 	public void update(GameContainer gc, int time_passed_ms) throws SlickException {
-		if (iters == 0){return;}
-		iters--;
 		p.update(gc, time_passed_ms);
 		ai.update(gc, time_passed_ms);
 
