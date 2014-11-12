@@ -27,8 +27,8 @@ public class AITest extends StellarObject{
 		//make cimg
 		_AITestCollider ac = new _AITestCollider();
 		Polygon pol = new Polygon(new float[]{
-			x   , y+5f,
-			x+5f, y-5f,
+			x+5f, y   ,
+			x-5f, y+5f,
 			x-5f, y-5f
 			});
 		CollisionImage cimg = new CollisionImage(pol, ac);
@@ -74,7 +74,7 @@ public class AITest extends StellarObject{
 		float rot_sign = neg_rot < pos_rot ? -1f : 1f;
 
 		//getPhys().rotate(rot_mag * rot_sign);
-		getPhys().rotate(restrictAngle(target_theta - current_theta - (float2pi/4)));
+		getPhys().rotate(restrictAngle(target_theta - current_theta));
 		getPhys().accelerateAligned(0f, THRUSTER_ACCELERATION);
 		
 		super.update(gc, time_passed_ms);

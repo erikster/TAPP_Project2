@@ -32,8 +32,8 @@ public class PlayerShip extends StellarObject{
 		//make cimg
 		_PlayerCollider pc = new _PlayerCollider();
 		Polygon pol = new Polygon(new float[]{
-			x   , y+5f,
-			x+5f, y-5f,
+			x+5f, y   ,
+			x-5f, y+5f,
 			x-5f, y-5f
 			});
 		CollisionImage cimg = new CollisionImage(pol, pc);

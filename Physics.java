@@ -111,8 +111,8 @@ public abstract class Physics{
 	 */
 	public void accelerateAligned(float dvs, float dvf){
 		accelerate( 
-			(float)(dvs*Math.cos(centroid_rot) - dvf*Math.sin(centroid_rot)),
-			(float)(dvs*Math.sin(centroid_rot) + dvf*Math.cos(centroid_rot))
+			(float)(dvf*Math.cos(centroid_rot) - dvs*Math.sin(centroid_rot)),
+			(float)(dvf*Math.sin(centroid_rot) + dvs*Math.cos(centroid_rot))
 			);
 	}
 
