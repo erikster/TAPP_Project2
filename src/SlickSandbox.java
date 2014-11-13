@@ -162,6 +162,7 @@ public class SlickSandbox extends BasicGame
 			AppGameContainer appgc;
 			appgc = new AppGameContainer(new SlickSandbox("PHYSICS DEMO 1.0"));
 			appgc.setDisplayMode(640, 480, false);
+			appgc.setTargetFrameRate(60);
 			appgc.start();
 		}
 		catch (SlickException ex)
