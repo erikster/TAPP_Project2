@@ -97,7 +97,9 @@ public class PlayerShip extends StellarObject{
 		public PlayerShip ps;
 
 		@Override
-		public void collide(Collider c){}
+		public void collide(Collider c) {
+			c.inflictDamage(1);
+		}
 
 		@Override
 		public void inflictDamage(int dam){

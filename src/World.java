@@ -26,31 +26,6 @@ public class World {
 	private CollisionLayer cl = new CollisionLayer();
 	private ArrayList<CollisionImage> cimgs = new ArrayList<>();
 	
-	private class B{ public boolean b; }
-	
-	public void addShape(Shape shape){
-		final B b1 = new B();
-		CollisionImage cimg = new CollisionImage(
-			shape,
-			new Collider(){
-				B bb = b1;
-				@Override
-				public void collide(Collider c){bb.b = true;}
-			}
-			){
-				B bb = b1;
-				@Override
-				public void render(GameContainer gc, Graphics g) throws SlickException{
-					super.setColor( bb.b?Color.red:Color.blue );
-					super.render(gc, g);
-					bb.b = false;
-				}
-			};
-		cimg.addTo(cl);
-		cimgs.add(cimg);
-
-	}
-	
 	/// Constructors
 	public World() {
 		this.gameObjects = new ArrayList<>();
@@ -95,8 +70,8 @@ public class World {
 		mainShip.render(gc, g);
 		
 		g.drawString("HP: " + mainShip.getHP(), midx - 40f, midy - 30f);
-
 		g.translate(midx - 320f, midy - 240f);
+		g.drawString("Use the arrow keys to move.", 10f, 30f);
 	}
 	
 }

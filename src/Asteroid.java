@@ -64,7 +64,9 @@ public class Asteroid extends StellarObject {
 		public Asteroid ast;
 		
 		@Override
-		public void collide(Collider c) { }
+		public void collide(Collider c) { 
+			c.inflictDamage(1); // inflicts damage on object it collides with
+		}
 
 	}
 }
