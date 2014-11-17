@@ -75,8 +75,6 @@ public class PlayerShip extends StellarObject{
 		}
 		super.update(gc, time_passed_ms);
 	}
-	
-	public int getHP() { return hp; }
 
 	//---------------
 	//--| Physics |--
@@ -103,7 +101,7 @@ public class PlayerShip extends StellarObject{
 
 		@Override
 		public void inflictDamage(int dam){
-			ps.hp -= dam;
+			HP -= dam;
 		}
 
 	}

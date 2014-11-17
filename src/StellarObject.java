@@ -16,6 +16,7 @@ import org.newdawn.slick.SlickException;
 public abstract class StellarObject{
 
 	private Physics phys;
+	private int HP;
 
 	//------------------
 	//--| 'structors |--
@@ -50,6 +51,8 @@ public abstract class StellarObject{
 	}
 	
 	/** Returns phys, as it was passed to the constructor */
-	public Physics getPhys(){return phys;}
-
+	public Physics getPhys(){ return phys; }
+	
+	/** Returns the health of the ship */
+	public int getHP() { return HP; }
 }
