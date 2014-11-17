@@ -1,1 +1,1 @@
-This is the folder to hold all source files (.java).
+This directory contains all .java files developed by The Agile Parsers Project as a part of Stellar Fugitive.

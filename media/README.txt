@@ -1,1 +1,1 @@
-This folder holds all the related music and image files.
+This directory should hold all the related music and image files needed by Stellar Fugitive.

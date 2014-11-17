@@ -1,1 +1,1 @@
-holds all native files needed to run our program
+This directory should hold all native files needed to run Stellar Fugitive.
