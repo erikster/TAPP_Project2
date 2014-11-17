@@ -16,7 +16,7 @@ import org.newdawn.slick.SlickException;
 public abstract class StellarObject{
 
 	private Physics phys;
-	private int HP;
+	protected int HP;
 
 	//------------------
 	//--| 'structors |--
@@ -41,7 +41,7 @@ public abstract class StellarObject{
 	//---------------
 	
 	/** Performs framewise updates; should be propegated from the base Slick2D game object */
-	public void update(GameContainer gc, int time_passed_ms){
+	public void update(GameContainer gc, int time_passed_ms) {
 		phys.update(gc, time_passed_ms);
 	}
 
@@ -51,7 +51,7 @@ public abstract class StellarObject{
 	}
 	
 	/** Returns phys, as it was passed to the constructor */
-	public Physics getPhys(){ return phys; }
+	public Physics getPhys() { return phys; }
 	
 	/** Returns the health of the ship */
 	public int getHP() { return HP; }

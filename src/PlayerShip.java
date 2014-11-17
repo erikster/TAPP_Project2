@@ -101,7 +101,7 @@ public class PlayerShip extends StellarObject{
 
 		@Override
 		public void inflictDamage(int dam){
-			HP -= dam;
+			ps.HP -= dam;
 		}
 
 	}
