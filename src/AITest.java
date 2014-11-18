@@ -97,13 +97,17 @@ public class AITest extends StellarObject{
 	//---------------
 
 	private static class _AITestPhysics extends Physics{
+		
+		private static final float FRICTION = .98f;
+
 		public _AITestPhysics(
-		Vector2f centroid,
-		CollisionImage cimg//GIMG,
-		//GIMGGraphicalImage gimg
-		){
-		//GIMGsuper(centroid, 0f, cimg, gimg);
-		super(centroid, 0f, cimg); //GIMG//FIXME: delete this line
+			Vector2f centroid,
+			CollisionImage cimg//GIMG,
+			//GIMGGraphicalImage gimg
+			){
+			//GIMGsuper(centroid, 0f, cimg, gimg);
+			super(centroid, 0f, cimg); //GIMG//FIXME: delete this line
+			setFriction(FRICTION);
 		}
 	}
 	

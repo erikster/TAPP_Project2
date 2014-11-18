@@ -60,17 +60,28 @@ public class PlayerShip extends StellarObject{
 		if (hp <= 0){
 			destroy();
 		}
-
+		
+		//keyboard input
 		Input in = gc.getInput();
+
 		if (in.isKeyDown(Input.KEY_LEFT)){
 			getPhys().rotate(-ROTATION);
 		}
+
 		if (in.isKeyDown(Input.KEY_RIGHT)){
 			getPhys().rotate(ROTATION);
 		}
+
 		if (in.isKeyDown(Input.KEY_UP)){
 			getPhys().accelerateAligned(0f, THRUSTER_ACCELERATION);
 		}
+
+		if (in.isKeyDown(Input.KEY_DOWN)){
+			getPhys().setFriction(_PlayerShipPhysics.FRICTION_BRAKING);
+		}else{
+			getPhys().setFriction(_PlayerShipPhysics.FRICTION_DEFAULT);
+		}
+
 		super.update(gc, time_passed_ms);
 	}
 
@@ -79,13 +90,19 @@ public class PlayerShip extends StellarObject{
 	//---------------
 
 	private static class _PlayerShipPhysics extends Physics{
+
+		
+		private static final float FRICTION_DEFAULT = .995f;
+		private static final float FRICTION_BRAKING = .950f;
+
 		public _PlayerShipPhysics(
-		Vector2f centroid,
-		CollisionImage cimg//GIMG,
-		//GIMGGraphicalImage gimg
-		){
-		//GIMGsuper(centroid, 0f, cimg, gimg);
-		super(centroid, 0f, cimg); //GIMG//FIXME: delete this line
+			Vector2f centroid,
+			CollisionImage cimg//GIMG,
+			//GIMGGraphicalImage gimg
+			){
+			//GIMGsuper(centroid, 0f, cimg, gimg);
+			super(centroid, 0f, cimg); //GIMG//FIXME: delete this line
+			setFriction(FRICTION_DEFAULT);
 		}
 	}
 	

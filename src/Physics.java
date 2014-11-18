@@ -30,6 +30,7 @@ public abstract class Physics{
 	//motion
 	private Vector2f velocity;
 	private float drot;
+	private float friction = 1f; //% of velocity that is retained after each frame; range is [0,1].
 
 	//cimg and gimg
 	private CollisionImage cimg;
@@ -148,6 +149,7 @@ public abstract class Physics{
 
 		//update motion (friction, etc.)
 		drot = 0f;
+		velocity = velocity.scale(friction);
 	}
 
 	/** Performs graphical updates; should be propegated from the base Slick2D game object */
@@ -184,5 +186,7 @@ public abstract class Physics{
 
 	/** Returns gimg, as it was passed to the constructor */
 	//GIMGpublic GraphicalImage getGImg(){return gimg;}
+
+	public void setFriction(float f){ friction = f; }
 
 }
