@@ -1,1 +1,0 @@
-This directory should hold the .jar files needed to compile Stellar Fugitive.
