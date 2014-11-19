@@ -6,6 +6,7 @@
  *    - collision detection (see CollisionImage.java)
  *    - graphical representation (see GraphicalImage.java)
  *
+ * //FIXME: after GraphicalImage is implemented, run ":%s/\/\/GIMG/g" and fix all relevant fixmes.
  */
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Point;
@@ -29,6 +30,7 @@ public abstract class Physics{
 	//motion
 	private Vector2f velocity;
 	private float drot;
+	private float friction = 1f; //% of velocity that is retained after each frame; range is [0,1].
 
 	//cimg and gimg
 	private CollisionImage cimg;
@@ -109,8 +111,8 @@ public abstract class Physics{
 	 */
 	public void accelerateAligned(float dvs, float dvf){
 		accelerate( 
-			(float)(dvs*Math.cos(centroid_rot) - dvf*Math.sin(centroid_rot)),
-			(float)(dvs*Math.sin(centroid_rot) + dvf*Math.cos(centroid_rot))
+			(float)(dvf*Math.cos(centroid_rot) - dvs*Math.sin(centroid_rot)),
+			(float)(dvf*Math.sin(centroid_rot) + dvs*Math.cos(centroid_rot))
 			);
 	}
 
@@ -146,11 +148,12 @@ public abstract class Physics{
 
 		//update motion (friction, etc.)
 		drot = 0f;
+		velocity = velocity.scale(friction);
 	}
 
 	/** Performs graphical updates; should be propegated from the base Slick2D game object */
 	public void render(GameContainer gc, Graphics g) throws SlickException{
-		//DEBUG - draw centroid
+		/* DEBUG - draw centroid
 		g.draw(
 			new Rectangle(
 				centroid_pos.x - 1f,
@@ -164,6 +167,7 @@ public abstract class Physics{
 			));
 
 		cimg.render(gc, g); //DEBUG - should be propegated from gimg, if it is called at all
+		*/
 		gimg.render(gc, g);
 	}
 
@@ -171,10 +175,26 @@ public abstract class Physics{
 	//--| Access Methods |--
 	//----------------------
 	
+	/** Returns a copy of the centroid's position vector */
+	public Vector2f getPosition(){return new Vector2f(centroid_pos);}
+
+	/** Returns the centroid's current rotation */
+	public float getRotation(){return centroid_rot;}
+	
+	/** Returns the angle of the velocity of the object */
+	public float getVelAngle() {
+		if (velocity.y == 0f && velocity.x == 0f)
+			return restrictAngle((float) Math.random() * float2pi);
+		float result = (float) Math.atan2(velocity.y, velocity.x);
+		return restrictAngle(result);
+	}
+
 	/** Returns cimg, as it was passed to the constructor */
 	public CollisionImage getCImg(){return cimg;}
 
 	/** Returns gimg, as it was passed to the constructor */
 	public GraphicalImage getGImg(){return gimg;}
+
+	public void setFriction(float f){ friction = f; }
 
 }

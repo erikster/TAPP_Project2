@@ -21,21 +21,21 @@ import java.util.*;
 public class World {
 
 	/// Fields
-	private Collection<StellarObject> gameObjects;
 	private PlayerShip mainShip;
-	private CollisionLayer cl = new CollisionLayer();
-	private ArrayList<CollisionImage> cimgs = new ArrayList<>();
+	private CollisionLayer cl;
+	private DebrisManager debris;
+	private AIManager aiships;
+	
+	private static boolean DEBUG_DISP = false;
 	
 	/// Constructors
 	public World() {
-		this.gameObjects = new ArrayList<>();
-		
+		this.cl       = new CollisionLayer();
+		this.debris   = new DebrisManager(cl);
+		this.aiships  = new AIManager(cl);
 		this.mainShip = PlayerShip.makeShip(0f, 0f);
-		mainShip.getPhys().getCImg().addTo(cl);
 		
-		Asteroid a1 = Asteroid.makeAsteroid(-100f, 100f);
-		a1.getPhys().getCImg().addTo(cl);
-		gameObjects.add(a1);
+		mainShip.getPhys().getCImg().addTo(cl);	
 	}
 	
 	/// Methods
@@ -43,12 +43,19 @@ public class World {
 	 * Updates our game's state
 	 * Throws a SlickException
 	 */
-	public void update(GameContainer gc, int i) throws SlickException { 
+	public void update(GameContainer gc, int i) throws SlickException {
 		mainShip.update(gc, i);
-		for (StellarObject so : gameObjects) {
-			so.update(gc, i);
-		}
+		debris.update(gc, i, mainShip.getPhys().getPosition(), mainShip.getPhys().getVelAngle());
+		aiships.update(gc, i);
 		cl.notifyCollisions();
+		
+		if (gc.getInput().isKeyPressed(Input.KEY_D)) {
+			DEBUG_DISP = !DEBUG_DISP;
+		}
+		
+		if (mainShip.getHP() < 0 || gc.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+			gc.exit();
+		}
 	}
 	
 	/**
@@ -60,18 +67,20 @@ public class World {
 		float midy = mainShip.getPhys().getGImg().getMidY();
 		g.translate(-midx + 320f, -midy + 240f);
 		
-		for (StellarObject so : gameObjects) {
-			so.render(gc, g);
-		}
-			
-		for (CollisionImage cimg : cimgs){
-			cimg.render(gc, g);
-		}
+		debris.render(gc, g);
+		aiships.render(gc, g);
+		
 		mainShip.render(gc, g);
 		
-		g.drawString("HP: " + mainShip.getHP(), midx - 40f, midy - 30f);
-		g.translate(midx - 320f, midy - 240f);
-		g.drawString("Use the arrow keys to move.", 10f, 30f);
+		g.translate(midx - 320f, midy - 240f); // undo the translation
+		
+		g.drawString("Use the arrow keys to move.", 10f, 10f);
+		g.drawString("HP: " + mainShip.getHP(), 10, 440);
+		
+		if (DEBUG_DISP) { // display debugging information
+			g.drawString("X: " + midx + ", Y: " + midy, 10, 420);
+			g.drawString("Asteroids: " + debris.count(), 10, 460);
+			g.drawString("FPS: " + gc.getFPS(), 570, 460);
+		}
 	}
-	
 }

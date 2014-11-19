@@ -58,11 +58,6 @@ public class PlayerShip extends StellarObject{
 	/** Performs framewise updates; should be propegated from the base Slick2D game object */
 	@Override
 	public void update(GameContainer gc, int time_passed_ms){
-		if (hp <= 0) {
-			// got a different idea for now
-			// destroy(); 
-		}
-
 		Input in = gc.getInput();
 		if (in.isKeyDown(Input.KEY_LEFT)){
 			getPhys().rotate(-ROTATION);
@@ -73,6 +68,11 @@ public class PlayerShip extends StellarObject{
 		if (in.isKeyDown(Input.KEY_UP)){
 			getPhys().accelerateAligned(0f, THRUSTER_ACCELERATION);
 		}
+		if (in.isKeyDown(Input.KEY_DOWN)) {
+			getPhys().setFriction(_PlayerShipPhysics.FRICTION_BRAKING);
+		} else {
+			getPhys().setFriction(_PlayerShipPhysics.FRICTION_DEFAULT);
+		}
 		super.update(gc, time_passed_ms);
 	}
 
@@ -81,12 +81,12 @@ public class PlayerShip extends StellarObject{
 	//---------------
 
 	private static class _PlayerShipPhysics extends Physics{
-		public _PlayerShipPhysics(
-		Vector2f centroid,
-		CollisionImage cimg,
-		GraphicalImage gimg
-		){
-			super(centroid, 0f, cimg, gimg);
+		private static final float FRICTION_DEFAULT = .995f;
+		private static final float FRICTION_BRAKING = .950f;
+		
+		public _PlayerShipPhysics(Vector2f centroid, CollisionImage cimg, GraphicalImage gimg ) {
+			super(centroid, (float) Math.PI / 2, cimg, gimg);
+			setFriction(FRICTION_DEFAULT);
 		}
 	}
 	

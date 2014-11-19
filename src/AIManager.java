@@ -1,16 +1,33 @@
+import java.util.*;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.geom.*;
+import org.newdawn.slick.SlickException;
+
 public class AIManager {
-	private Collection<Asteroid> asteroids;
+	private Collection<AITest> ships;
 	private CollisionLayer cl;
 	
 	public AIManager(CollisionLayer cl) {
 		this.cl = cl;
+		this.ships = new ArrayList<>();
 	}
 	
-	public void update(GameController gc, int delta) {
-		// probably just gonna for-each update the contained objects for now
+	public void update(GameContainer gc, int delta) throws SlickException {
+		for (AITest a : ships) {
+			a.update(gc, delta);
+		}
 	}
 	
-	public void draw(GameController gc, Graphics g) {
-		// probably just gonna for-each draw the contained objects for now
+	public void render(GameContainer gc, Graphics g) throws SlickException {
+		for (AITest a : ships) {
+			a.render(gc, g);
+		}
+	}
+	
+	public void addShip(AITest a) {
+		ships.add(a);
+		a.getPhys().getCImg().addTo(cl);
 	}
 }

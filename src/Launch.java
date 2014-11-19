@@ -25,6 +25,7 @@ public class Launch {
 				);
 			agc.setDisplayMode(640, 480, false);
 			agc.setTargetFrameRate(60);
+			agc.setShowFPS(false);
 			agc.start();
 		} catch (SlickException ex) {
 			ex.printStackTrace();
