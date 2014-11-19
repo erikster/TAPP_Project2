@@ -65,11 +65,17 @@ public class DebrisManager {
 	private static final float float2pi = (float)Math.PI * 2f;
 	
 	private void spawnInRange(Vector2f pos, float angle) {
-		float distance = 350f + 350f * rand.nextFloat();
-		float theta = angle + (float) Math.PI * ((rand.nextFloat() - 0.5f) / 1.5f);
+		float rand_coef = rand.nextFloat();
+//		System.out.println("Randomized distance coefficient : " + rand_coef);
+		float distance = 350f + 350f * rand_coef;
+//		System.out.println("Distance: " + rand_coef);
+		rand_coef = rand.nextFloat();
+//		System.out.println("Randomized angle coefficient : " + rand_coef);
+		float theta = angle + (float) Math.PI * ((rand_coef - 0.5f) / 1.5f);
 		theta = restrictAngle(theta);
-		float x = pos.x + distance + (float) Math.cos(theta);
-		float y = pos.y + distance + (float) Math.sin(theta);
+//		System.out.println("Relative angle: " + theta);
+		float x = pos.x + distance * (float) Math.cos(theta);
+		float y = pos.y + distance * (float) Math.sin(theta);
 		Asteroid result = Asteroid.makeAsteroid(x, y);
 		result.getPhys().getCImg().addTo(cl);
 		asteroids.add(result);
