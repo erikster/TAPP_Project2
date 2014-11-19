@@ -31,15 +31,18 @@ public class DebrisManager {
 				spawnInRange(pos, angle);
 			}
 		}
+		List<Asteroid> toDestroy = new LinkedList<>();
 		for (Asteroid a : asteroids) {
 			Vector2f apos = a.getPhys().getPosition();
 			if (apos.distanceSquared(pos) > MAX_DIST_SQ) {
 				/** TODO: FIGURE OUT DESTRUCTION BEHAVIOR OF OUR OBJECTS */
-				//a.destroy();
-				//asteroids.remove(a);
-				//a.getPhys().getCImg().removeFrom(cl);
+				toDestroy.add(a);
 			}
 			a.update(gc, delta);
+		}
+		for (Asteroid a : toDestroy){
+			asteroids.remove(a);
+			a.destroy();
 		}
 	}
 	
