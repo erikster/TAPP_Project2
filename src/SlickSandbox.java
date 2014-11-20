@@ -51,7 +51,7 @@ public class SlickSandbox extends BasicGame
 
 	//Test objects
 	PlayerShip p;
-	HashSet<Character> keys_pressed = new HashSet<Character>();
+	AITest ai;
 
 	ArrayList<CollisionImage> cimgs = new ArrayList<CollisionImage>();
 
@@ -102,6 +102,9 @@ public class SlickSandbox extends BasicGame
 	public void init(GameContainer gc) throws SlickException {
 		p = PlayerShip.makeShip(100f, 100f);
 		p.getPhys().getCImg().addTo(cl);
+		ai = AITest.makeAI(200f, 200f, p);
+		ai.getPhys().getCImg().addTo(cl);
+
 		addShape(new Rectangle(200f,200f,40f,40f));
 		addShape(new Rectangle(100f,200f,50f,150f));
 		addShape(new Ellipse(250,375,50,70));
@@ -124,6 +127,7 @@ public class SlickSandbox extends BasicGame
 	@Override
 	public void update(GameContainer gc, int time_passed_ms) throws SlickException {
 		p.update(gc, time_passed_ms);
+		ai.update(gc, time_passed_ms);
 
 		cl.notifyCollisions();
 	}
@@ -144,7 +148,7 @@ public class SlickSandbox extends BasicGame
 		killbox.render(gc, g);
 
 		if (!firstkey){
-			g.drawString("Move with the arrow keys\nShapes light up on collision\n- Press any key -", 200, 100);
+			g.drawString("Move with the arrow keys\nShapes light up on collision\nPurple box kills you (unfinished)\n- Press any key -", 200, 100);
 		}
 		g.translate(midx - 320, midy - 240);
 	}
@@ -152,13 +156,6 @@ public class SlickSandbox extends BasicGame
 	@Override
 	public void keyPressed(int key, char c){
 		firstkey = true;
-		keys_pressed.add(c);
-	}
-
-	@Override
-	public void keyReleased(int key, char c){
-		keys_pressed.remove(c);
-		
 	}
 
 	public static void main(String[] args)

@@ -103,6 +103,8 @@ public class AITest extends StellarObject{
 			GraphicalImage gimg
 			){
 			super(centroid, 0f, cimg, gimg);
+
+
 			setFriction(FRICTION);
 		}
 	}
