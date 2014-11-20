@@ -197,6 +197,4 @@ public abstract class Physics{
 
 	public void setFriction(float f){ friction = f; }
 
-	public void setFriction(float f){ friction = f; }
-
 }
