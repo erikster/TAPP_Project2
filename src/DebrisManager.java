@@ -12,8 +12,8 @@ public class DebrisManager {
 	private int timeSince;
 	private Random rand;
 	
-	private static final int MAX_ROIDS   = 30;   // max amount of asteroids to track
-	private static final int INTERVAL_MS = 500;  // ~0.5 seconds
+	private static final int MAX_ROIDS      = 30;   // max amount of asteroids to track
+	private static final int INTERVAL_MS    = 250;  // ~0.25 seconds
 	private static final float MAX_DIST_SQ  = 600f * 600f; // max distance before asteroids get wrecked
 	
 	public DebrisManager(CollisionLayer cl) {
@@ -70,7 +70,7 @@ public class DebrisManager {
 	private void spawnInRange(Vector2f pos, float angle) {
 		float rand_coef = rand.nextFloat();
 //		System.out.println("Randomized distance coefficient : " + rand_coef);
-		float distance = 350f + 350f * rand_coef;
+		float distance = 400f + 350f * rand_coef;
 //		System.out.println("Distance: " + rand_coef);
 		rand_coef = rand.nextFloat();
 //		System.out.println("Randomized angle coefficient : " + rand_coef);

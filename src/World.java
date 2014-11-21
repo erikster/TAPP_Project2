@@ -32,9 +32,8 @@ public class World {
 	public World() {
 		this.cl       = new CollisionLayer();
 		this.debris   = new DebrisManager(cl);
-		this.aiships  = new AIManager(cl);
 		this.mainShip = PlayerShip.makeShip(0f, 0f);
-		
+		this.aiships  = new AIManager(cl, mainShip);		
 		mainShip.getPhys().getCImg().addTo(cl);	
 	}
 	
@@ -75,11 +74,12 @@ public class World {
 		g.translate(midx - 320f, midy - 240f); // undo the translation
 		
 		g.drawString("Use the arrow keys to move.", 10f, 10f);
-		g.drawString("HP: " + mainShip.getHP(), 10, 440);
+		g.drawString("HP: " + mainShip.getHP(), 10, 460);
 		
 		if (DEBUG_DISP) { // display debugging information
-			g.drawString("X: " + midx + ", Y: " + midy, 10, 420);
-			g.drawString("Asteroids: " + debris.count(), 10, 460);
+			g.drawString("X: " + midx + ", Y: " + midy, 10, 400);
+			g.drawString("Asteroids: " + debris.count(), 10, 420);
+			g.drawString("AI Ships:  " + aiships.count(), 10, 440);
 			g.drawString("FPS: " + gc.getFPS(), 570, 460);
 		}
 	}

@@ -3,6 +3,7 @@ import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.fills.*;
 
 public class AITest extends StellarObject{
 	
@@ -32,7 +33,7 @@ public class AITest extends StellarObject{
 			x-5f, y-5f
 			});
 		CollisionImage cimg = new CollisionImage(pol, ac);
-		GraphicalImage gimg = new GraphicalImage(pol);
+		GraphicalImage gimg = new GraphicalImage(pol, new GradientFill(0.0f, 0.0f, Color.red, 1.0f, 1.0f, Color.red));
 		//make the AITest
 		AITest ai = new AITest(new _AITestPhysics(centroid, cimg, gimg), target);
 
@@ -109,6 +110,11 @@ public class AITest extends StellarObject{
 	
 	private static class _AITestCollider extends Collider{
 		public AITest ai;
+		
+		@Override
+		public void collide(Collider c) { 
+			c.inflictDamage(1); // inflicts damage on object it collides with
+		}
 	}
 
 }
