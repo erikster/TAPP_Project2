@@ -49,6 +49,10 @@ public abstract class StellarObject{
 	public void render(GameContainer gc, Graphics g) throws SlickException{
 		phys.render(gc, g);
 	}
+
+	//----------------------
+	//--| Access Methods |--
+	//----------------------
 	
 	/** Returns phys, as it was passed to the constructor */
 	public Physics getPhys() { return phys; }

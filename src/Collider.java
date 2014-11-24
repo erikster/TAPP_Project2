@@ -78,13 +78,6 @@ public abstract class Collider{
 	//---------------------------
 	//methods by which to interact with another Collidable during a collision
 
-	//EXAMPLES:
 	public void inflictDamage(int dam){}
-	//public void impartForce(double force_newtons);
-	//
-	//public static final int SOLID_TO_PLAYER = 0b1;
-	//public static final int SOLID_TO_BULLET = 0b10;
-	//public static final int SOLID_TO_ENEMY  = 0b100;
-	//public void informSolidity(int solidity);
 
 }

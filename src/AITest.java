@@ -1,3 +1,11 @@
+/**
+ * AITest.java
+ *
+ * A simple AI
+ *
+ * Author: Wesley Gydé
+ */
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Vector2f;
@@ -9,19 +17,22 @@ public class AITest extends StellarObject{
 	
 	private static final float THRUSTER_ACCELERATION = .05f; //thruster acceleration in px/frame^2
 	private static final float ROTATION = .05f; //rotational displacement in rad/frame
-	private StellarObject target;
+	private StellarObject seek_target;
+	private StellarObject flee_target;
 
 	//------------------
 	//--| 'structors |--
 	//------------------
 
-	private AITest(Physics phys, StellarObject target){
+	private AITest(Physics phys, StellarObject seek_target, StellarObject flee_target){
 		super(phys);
-		this.target = target;
+		this.seek_target = seek_target;
+		this.flee_target = flee_target;
+
 		phys.getCImg().setColor(Color.green);
 	}
 
-	public static AITest makeAI(float x, float y, StellarObject target){
+	public static AITest makeAI(float x, float y, StellarObject seek_target, StellarObject flee_target){
 		//make centroid
 		Vector2f centroid = new Vector2f(x, y);
 
@@ -35,7 +46,7 @@ public class AITest extends StellarObject{
 		CollisionImage cimg = new CollisionImage(pol, ac);
 		GraphicalImage gimg = new GraphicalImage(pol, new GradientFill(0.0f, 0.0f, Color.red, 1.0f, 1.0f, Color.red));
 		//make the AITest
-		AITest ai = new AITest(new _AITestPhysics(centroid, cimg, gimg), target);
+		AITest ai = new AITest(new _AITestPhysics(centroid, cimg, gimg), seek_target, flee_target);
 
 		//close circular references
 		ac.ai = ai;
@@ -50,31 +61,29 @@ public class AITest extends StellarObject{
 	/** Performs framewise updates; should be propegated from the base Slick2D game object */
 	@Override
 	public void update(GameContainer gc, int time_passed_ms){
-		Vector2f target_pos = target.getPhys().getPosition();
-		Vector2f current_pos = getPhys().getPosition();
-		float dx = target_pos.x - current_pos.x;
-		float dy = target_pos.y - current_pos.y;
-		float target_theta = restrictAngle( (float)Math.atan2(dy, dx) );
-		float current_theta = getPhys().getRotation();
 		
-		float neg_rot = 0f;
-		float pos_rot = 0f;
-		if (current_theta > target_theta){
-			neg_rot = current_theta - target_theta;
-			pos_rot = float2pi - current_theta + target_theta;
-		}else{
-			neg_rot = float2pi - target_theta + current_theta;
-			pos_rot = target_theta - current_theta;
-		}
+		AIHelper ai = new AIHelper(this){
+			@Override
+			public void update(GameContainer gc, int time_passed_ms) {
 
-		//float rot_mag = Math.min(ROTATION, Math.min(neg_rot, pos_rot));
-		float rot_mag = Math.min(neg_rot, pos_rot);
-		float rot_sign = neg_rot < pos_rot ? -1f : 1f;
+				Vector2f steer = new Vector2f();
 
-		//getPhys().rotate(rot_mag * rot_sign);
-		getPhys().rotate(restrictAngle(target_theta - current_theta));
-		getPhys().accelerateAligned(0f, THRUSTER_ACCELERATION);
-		
+				float distance = getVectorTo(flee_target).length();
+				float flee_scale = 80f/Math.max(0.0001f, getVectorTo(flee_target).length() - 20f); //weaker as distance increases
+				flee_scale = flee_scale < .1 ? 0 : flee_scale;
+
+				float seek_scale = 1f - flee_scale;
+				seek_scale = seek_scale <  0 ? 0 : seek_scale;
+				
+				steer = steer.add( flee(flee_target).scale(flee_scale) );
+				steer = steer.add( seek(seek_target).scale(seek_scale) );
+
+				accelerate(steer);
+
+			}
+		};
+		ai.update(gc, time_passed_ms);
+
 		super.update(gc, time_passed_ms);
 	}
 
@@ -91,7 +100,7 @@ public class AITest extends StellarObject{
 	private static final float float2pi = (float)Math.PI * 2f;
 
 	//---------------
-	//--| Physics |--
+	//--| Aspects |--
 	//---------------
 
 	private static class _AITestPhysics extends Physics{
