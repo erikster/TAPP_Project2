@@ -15,10 +15,12 @@
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 import org.newdawn.slick.fills.*;
+import org.newdawn.slick.state.*;
 
-public class StellarGame extends BasicGame {
+public class StellarGame extends StateBasedGame {
 	/// fields
-	private World gameWorld;
+	private MenuState mainMenu;
+	private InGameState ingame;
 	
 	/// constructors
 	/**
@@ -27,37 +29,14 @@ public class StellarGame extends BasicGame {
 	 */
 	public StellarGame(String gamename) {
 		super(gamename);
-		this.gameWorld = null;
 	}
 	
-	/// methods
-	
-	/**
-	 * Initiates the game
-	 * Loads media or objects needed for the game to run
-	 * Throws a SlickException
-	 */
 	@Override
-	public void init(GameContainer gc) throws SlickException { 
-		gameWorld = new World();
+	public void initStatesList(GameContainer gc) {
+		this.mainMenu = new MenuState();
+		this.ingame = new InGameState();
+		addState(mainMenu);
+		addState(ingame);
+		enterState(ingame.getID());
 	}
-	
-	/**
-	 * Updates our game's state
-	 * Throws a SlickException
-	 */
-	@Override
-	public void update(GameContainer gc, int i) throws SlickException { 
-		gameWorld.update(gc, i);
-	}
-	
-	/**
-	 * Renders our game onto the screen
-	 * Throws a SlickException
-	 */
-	@Override
-	public void render(GameContainer gc, Graphics g) throws SlickException { 
-		gameWorld.render(gc, g);
-	}
-	
 }
