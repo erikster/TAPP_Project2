@@ -12,13 +12,13 @@ public class DebrisManager {
 	private int timeSince;
 	private Random rand;
 	
-	private static final int MAX_ROIDS   = 30;   // max amount of asteroids to track
-	private static final int INTERVAL_MS = 500;  // ~0.5 seconds
-	private static final float MAX_DIST_SQ  = 600f * 600f; // max distance before asteroids get wrecked
+	private static final int MAX_ROIDS      = 30;   // max amount of asteroids to track
+	private static final int INTERVAL_MS    = 250;  // ~0.25 seconds
+	private static final float MAX_DIST_SQ  = 800f * 800f; // max distance before asteroids get wrecked
 	
 	public DebrisManager(CollisionLayer cl) {
 		this.cl = cl;
-		this.asteroids = new ArrayList<>();
+		this.asteroids = new ArrayList<>(MAX_ROIDS);
 		this.timeSince = 0;
 		this.rand = new Random();
 	}
@@ -34,8 +34,7 @@ public class DebrisManager {
 		List<Asteroid> toDestroy = new LinkedList<>();
 		for (Asteroid a : asteroids) {
 			Vector2f apos = a.getPhys().getPosition();
-			if (apos.distanceSquared(pos) > MAX_DIST_SQ) {
-				/** TODO: FIGURE OUT DESTRUCTION BEHAVIOR OF OUR OBJECTS */
+			if (apos.distanceSquared(pos) > MAX_DIST_SQ || a.getHP() < 1) {
 				toDestroy.add(a);
 			}
 			a.update(gc, delta);
@@ -70,7 +69,7 @@ public class DebrisManager {
 	private void spawnInRange(Vector2f pos, float angle) {
 		float rand_coef = rand.nextFloat();
 //		System.out.println("Randomized distance coefficient : " + rand_coef);
-		float distance = 350f + 350f * rand_coef;
+		float distance = 400f + 350f * rand_coef;
 //		System.out.println("Distance: " + rand_coef);
 		rand_coef = rand.nextFloat();
 //		System.out.println("Randomized angle coefficient : " + rand_coef);
@@ -80,6 +79,9 @@ public class DebrisManager {
 		float x = pos.x + distance * (float) Math.cos(theta);
 		float y = pos.y + distance * (float) Math.sin(theta);
 		Asteroid result = Asteroid.makeAsteroid(x, y);
+		float rand_angle = float2pi * rand.nextFloat();
+		float rand_speed = 2f * rand.nextFloat();
+		result.getPhys().accelerate((float) Math.cos(rand_angle) * rand_speed, (float) Math.sin(rand_angle) * rand_speed);
 		result.getPhys().getCImg().addTo(cl);
 		asteroids.add(result);
 	}

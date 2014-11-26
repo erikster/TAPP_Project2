@@ -32,9 +32,8 @@ public class World {
 	public World() {
 		this.cl       = new CollisionLayer();
 		this.debris   = new DebrisManager(cl);
-		this.aiships  = new AIManager(cl);
-		this.mainShip = PlayerShip.makeShip(0f, 0f);
-		
+		this.mainShip = PlayerShip.makeShip(0f, 0f, cl);
+		this.aiships  = new AIManager(cl, mainShip);		
 		mainShip.getPhys().getCImg().addTo(cl);	
 	}
 	
@@ -46,17 +45,19 @@ public class World {
 	public void update(GameContainer gc, int i) throws SlickException {
 		mainShip.update(gc, i);
 		debris.update(gc, i, mainShip.getPhys().getPosition(), mainShip.getPhys().getVelAngle());
-		aiships.update(gc, i);
+		aiships.update(gc, i, mainShip.getPhys().getPosition());
 		cl.notifyCollisions();
 		
 		if (gc.getInput().isKeyPressed(Input.KEY_D)) {
 			DEBUG_DISP = !DEBUG_DISP;
 		}
 		
-		if (mainShip.getHP() < 0 || gc.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+		if (gc.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
 			gc.exit();
 		}
 	}
+	
+	public int shipHP() { return mainShip.getHP(); }
 	
 	/**
 	 * Renders our game onto the screen
@@ -75,11 +76,13 @@ public class World {
 		g.translate(midx - 320f, midy - 240f); // undo the translation
 		
 		g.drawString("Use the arrow keys to move.", 10f, 10f);
-		g.drawString("HP: " + mainShip.getHP(), 10, 440);
+		g.drawString("Use the space key to fire!", 10f, 30f);
+		g.drawString("HP: " + mainShip.getHP(), 10, 460);
 		
 		if (DEBUG_DISP) { // display debugging information
-			g.drawString("X: " + midx + ", Y: " + midy, 10, 420);
-			g.drawString("Asteroids: " + debris.count(), 10, 460);
+			g.drawString("X: " + midx + ", Y: " + midy, 10, 400);
+			g.drawString("Asteroids: " + debris.count(), 10, 420);
+			g.drawString("AI Ships:  " + aiships.count(), 10, 440);
 			g.drawString("FPS: " + gc.getFPS(), 570, 460);
 		}
 	}

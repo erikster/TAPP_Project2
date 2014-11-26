@@ -69,6 +69,10 @@ public class Asteroid extends StellarObject {
 		public void collide(Collider c) { 
 			c.inflictDamage(1); // inflicts damage on object it collides with
 		}
-
+		
+		@Override
+		public void inflictDamage(int dam) {
+			ast.HP -= dam;
+		}
 	}
 }

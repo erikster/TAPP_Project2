@@ -6,11 +6,13 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.fills.GradientFill;
 import java.util.Random;
 
+
 public class AITest extends StellarObject{
 	
 	private static final float THRUSTER_ACCELERATION = .05f; //thruster acceleration in px/frame^2
 	private static final float ROTATION = .05f; //rotational displacement in rad/frame
 	private StellarObject target;
+
 	//------------------
 	//--| 'structors |--
 	//------------------
@@ -170,6 +172,16 @@ public class AITest extends StellarObject{
 	
 	private static class _AITestCollider extends Collider{
 		public AITest ai;
+		
+		@Override
+		public void collide(Collider c) { 
+			c.inflictDamage(1); // inflicts damage on object it collides with
+		}
+		
+		@Override
+		public void inflictDamage(int dam){
+			ai.HP -= dam;
+		}
 	}
 
 }

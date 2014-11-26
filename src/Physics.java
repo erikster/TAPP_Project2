@@ -161,10 +161,10 @@ public abstract class Physics{
 	//----------------------
 	
 	/** Returns a copy of the centroid's position vector */
-	public Vector2f getPosition(){return new Vector2f(centroid_pos);}
+	public Vector2f getPosition() { return new Vector2f(centroid_pos); }
 
 	/** Returns the centroid's current rotation */
-	public float getRotation(){return centroid_rot;}
+	public float getRotation() { return centroid_rot; }
 	
 	/** Returns the angle of the velocity of the object */
 	public float getVelAngle() {
@@ -173,6 +173,12 @@ public abstract class Physics{
 		float result = (float) Math.atan2(velocity.y, velocity.x);
 		return restrictAngle(result);
 	}
+	
+	/** Returns the speed of the object */
+	public float getSpeed() {
+		float result = (float) Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+		return result;
+	}
 
 	/** Returns a copy of the velocity vector for this */
 	public Vector2f getVelocity(){
@@ -180,10 +186,10 @@ public abstract class Physics{
 	}
 
 	/** Returns cimg, as it was passed to the constructor */
-	public CollisionImage getCImg(){return cimg;}
+	public CollisionImage getCImg() { return cimg; }
 
 	/** Returns gimg, as it was passed to the constructor */
-	public GraphicalImage getGImg(){return gimg;}
+	public GraphicalImage getGImg() { return gimg; }
 
 	public void setFriction(float f){ friction = f; }
 	public float getFriction(){return friction;}
