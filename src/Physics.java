@@ -153,21 +153,6 @@ public abstract class Physics{
 
 	/** Performs graphical updates; should be propegated from the base Slick2D game object */
 	public void render(GameContainer gc, Graphics g) throws SlickException{
-		/* DEBUG - draw centroid
-		g.draw(
-			new Rectangle(
-				centroid_pos.x - 1f,
-				centroid_pos.y - 1f,
-				2f,
-				2f
-			),
-			new GradientFill(
-				0.0f,   0.0f, Color.red,
-				1.0f,   1.0f, Color.red
-			));
-
-		cimg.render(gc, g); //DEBUG - should be propegated from gimg, if it is called at all
-		*/
 		gimg.render(gc, g);
 	}
 
@@ -189,6 +174,11 @@ public abstract class Physics{
 		return restrictAngle(result);
 	}
 
+	/** Returns a copy of the velocity vector for this */
+	public Vector2f getVelocity(){
+		return velocity.copy();
+	}
+
 	/** Returns cimg, as it was passed to the constructor */
 	public CollisionImage getCImg(){return cimg;}
 
@@ -196,5 +186,6 @@ public abstract class Physics{
 	public GraphicalImage getGImg(){return gimg;}
 
 	public void setFriction(float f){ friction = f; }
+	public float getFriction(){return friction;}
 
 }
