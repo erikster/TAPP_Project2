@@ -1,7 +1,10 @@
 /**
+ * AIHelper.java
  *
+ * Provides helper methods (including steering patterns) to simplify AI implementations elsewhere. Like Physis and Collider,
+ * this class is intended to exist as a private subclass within an implementing superclass.
  *
- *
+ * Author: Wesley Gydé
  */
 
 import org.newdawn.slick.GameContainer;
@@ -9,24 +12,6 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class AIHelper{
 	
-	//needed as a return value in several places
-	protected class Movement{
-		public Movement(Vector2f acceleration, float rotation){
-			this.acceleration = acceleration;
-			this.rotation = rotation;
-		}
-
-		public final Vector2f acceleration;
-		public final float rotation;
-
-		public Movement scale(float f){
-			return new Movement(
-				acceleration.scale(f),
-				f < 1f ? rotation*f : rotation
-				);
-		}
-	}
-
 	private StellarObject subject;
 	private float max_acceleration = .05f;
 	private float max_rotation = .05f;
@@ -36,15 +21,10 @@ public class AIHelper{
 	//--| 'structors |--
 	//------------------
 
-	/**
-	 * Constructor
-	 *
-	 * @param so a StellarObject to control
-	 */
-	AIHelper(StellarObject so){
-		subject = so;
-
-		float decel_from_friction = (1-so.getPhys().getFriction()); //percentage of acceleration lost to friction, per frame.
+	/** Links this with a StellarObject; this method must be called for most other methods in the class to work properly */
+	public void setSubject(StellarObject subject){
+		this.subject = subject;
+		float decel_from_friction = (1-subject.getPhys().getFriction()); //percentage of acceleration lost to friction, per frame.
 		max_velocity = (decel_from_friction==0) ? Float.MAX_VALUE : max_acceleration/decel_from_friction ;
 	}
 	
@@ -193,25 +173,28 @@ public class AIHelper{
 	/**
 	 * Accelerates according to the input velocity vector.
 	 *
-	 * vvv UNIMPLEMENTED vvv
-	 * Note that the input vector will be restricted to conform with acceleration/rotation restrictions.
-	 *
 	 * @param dv Literally "Δv"; the desired change in velocity
 	 */
 	protected void accelerate(Vector2f dv){
 
-		/* //Use the same physics as the player
-
+		//* //Use the same physics as the player
+		
+		Vector2f target_velocity = getVelocityOf(subject).add(dv);
+		float target_rot = (float)Math.toRadians(target_velocity.getTheta());
 		rotate(
 			restrictRotation(
 				getRotationTowards(
-					getPositionOf(subject).add(getVelocityOf(subject).add(dv))
+					getPositionOf(subject).add(target_velocity)
 				),
 				max_rotation,
-				.001f
+				.05f
 			)
 		);
-		subject.getPhys().accelerateAligned(0, max_acceleration);
+		
+		float tolerance = floatpi/3;
+		if( Math.abs(getRotationOf(subject) - target_rot) < tolerance ){
+			subject.getPhys().accelerateAligned(0, max_acceleration);
+		}
 
 		/*/ //Use the typical steering-pattern physics
 
@@ -237,47 +220,20 @@ public class AIHelper{
 	/**
 	 * Moves towards the specified target
 	 *
+	 * @param target The target to seek
 	 * @return Vector2f The acceleration vector produced by this steering pattern
 	 */
 	protected Vector2f seek(StellarObject target){
-		
-		/* //DOES NOT WORK
-		//predict position of target
-
-		//	misc. objects I'll be needing
-		Vector2f vs = getVelocityOf(subject);
-		Vector2f vt = getVelocityOf(target);
-		Vector2f ps = getPositionOf(subject);
-		Vector2f pt = getPositionOf(target);
-		float θ = -(float)Math.toRadians(vt.getTheta());
-
-		//	english letters (concrete quantities; more gathered than calculated)
-		float psx = (ps.x*(float)Math.cos(θ)) - (ps.y*(float)Math.sin(θ));
-		float psy = (ps.x*(float)Math.sin(θ)) + (ps.y*(float)Math.cos(θ));
-		float vsm = max_velocity;
-		float vtm = vt.length();
-
-		float psx2 = (float)Math.pow(psx, 2);
-		float psy2 = (float)Math.pow(psy, 2);
-		float vsm2 = (float)Math.pow(vsm, 2);
-		float vtm2 = (float)Math.pow(vtm, 2);
-
-		//	greek letters (gibberish spat out by wolfram)
-
-		//	time to contact
-		float t = ((float)Math.sqrt((vsm2*psx2) + (vsm2*psy2) - (vtm2*psy2)) - (vtm*psx))/(vsm2-vtm2);
-		System.out.println("t=" + t);
-		*/
-
-		//calculate ideal acceleration
+		//approximate target position post-movement
+		Vector2f velocity_desired = getVectorTo(target);
 		Vector2f velocity_current = getVelocityOf(subject);
-		Vector2f velocity_target  = restrictVelocity(getVectorTo(target));
-		return velocity_target.sub(velocity_current);		
+		return velocity_desired.sub(velocity_current);
 	}
 
 	/**
 	 * Runs away from the input target
 	 *
+	 * @param target The target to flee from
 	 * @return Vector2f The acceleration vector produced by this steering pattern
 	 */
 	protected Vector2f flee(StellarObject target){
@@ -285,15 +241,43 @@ public class AIHelper{
 	}
 
 	/**
-	 * Wanders aimlessly
+	 * Pursue the specified target (attempt to predict its motion, and seek)
 	 *
+	 * @param target The target to pursue
+	 * @return Vector2f The acceleration vector produced by this steering pattern
+	 */
+	protected Vector2f pursue(StellarObject target){
+		float time = getVectorTo(target).length() / max_velocity;
+		Vector2f velocity_desired =
+			restrictVelocity(
+				getPositionOf(target).add(
+					getVelocityOf(target).scale(
+						time
+					)
+				).sub(
+					getPositionOf(
+						subject
+					)
+				)
+			);
+		Vector2f velocity_current = getVelocityOf(subject);
+		return velocity_desired.sub(velocity_current);
+	}
+
+	/**
+	 * Wanders aimlessly
+	 * Returns a random vector with the specified magnitude
+	 *
+	 * @param magnitude The magnitude of the change in velocity imparted by this
 	 * @return Vector2f The movement vector produced by this steering pattern
 	 */
-	/*// UNIMPLEMENTED
-	private Vector2f wander(float magnitude){
-		
+	protected Vector2f wander(float magnitude){
+		double theta = Math.random()*2*Math.PI;
+		return new Vector2f(
+			(float)( magnitude*Math.cos(theta) ),
+			(float)( magnitude*Math.sin(theta) )
+			);
 	}
-	//*/
 
 	/**
 	 * Attempts to dodge nearby obstacles
