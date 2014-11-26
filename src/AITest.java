@@ -18,21 +18,21 @@ public class AITest extends StellarObject{
 	private static final float THRUSTER_ACCELERATION = .05f; //thruster acceleration in px/frame^2
 	private static final float ROTATION = .05f; //rotational displacement in rad/frame
 	private StellarObject seek_target;
-	private StellarObject flee_target;
+//	private StellarObject flee_target;
 
 	//------------------
 	//--| 'structors |--
 	//------------------
 
-	private AITest(Physics phys, StellarObject seek_target, StellarObject flee_target){
+	private AITest(Physics phys, StellarObject seek_target){
 		super(phys);
 		this.seek_target = seek_target;
-		this.flee_target = flee_target;
+	//	this.flee_target = flee_target;
 
 		phys.getCImg().setColor(Color.green);
 	}
 
-	public static AITest makeAI(float x, float y, StellarObject seek_target, StellarObject flee_target){
+	public static AITest makeAI(float x, float y, StellarObject seek_target){
 		//make centroid
 		Vector2f centroid = new Vector2f(x, y);
 
@@ -46,7 +46,7 @@ public class AITest extends StellarObject{
 		CollisionImage cimg = new CollisionImage(pol, ac);
 		GraphicalImage gimg = new GraphicalImage(pol, new GradientFill(0.0f, 0.0f, Color.red, 1.0f, 1.0f, Color.red));
 		//make the AITest
-		AITest ai = new AITest(new _AITestPhysics(centroid, cimg, gimg), seek_target, flee_target);
+		AITest ai = new AITest(new _AITestPhysics(centroid, cimg, gimg), seek_target);
 
 		//close circular references
 		ac.ai = ai;
@@ -68,14 +68,14 @@ public class AITest extends StellarObject{
 
 				Vector2f steer = new Vector2f();
 
-				float distance = getVectorTo(flee_target).length();
-				float flee_scale = 80f/Math.max(0.0001f, getVectorTo(flee_target).length() - 20f); //weaker as distance increases
-				flee_scale = flee_scale < .1 ? 0 : flee_scale;
+	//			float distance = getVectorTo(flee_target).length();
+	//			float flee_scale = 80f/Math.max(0.0001f, getVectorTo(flee_target).length() - 20f); //weaker as distance increases
+	//			flee_scale = flee_scale < .1 ? 0 : flee_scale;
 
-				float seek_scale = 1f - flee_scale;
+				float seek_scale = 1f ;//- flee_scale;
 				seek_scale = seek_scale <  0 ? 0 : seek_scale;
 				
-				steer = steer.add( flee(flee_target).scale(flee_scale) );
+	//			steer = steer.add( flee(flee_target).scale(flee_scale) );
 				steer = steer.add( seek(seek_target).scale(seek_scale) );
 
 				accelerate(steer);

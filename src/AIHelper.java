@@ -280,7 +280,7 @@ public class AIHelper{
 	 *
 	 * @return Vector2f The acceleration vector produced by this steering pattern
 	 */
-	protected Vector2f flee(StellarObject target){
+	/*protected Vector2f flee(StellarObject target){
 		return seek(target).negate();
 	}
 
