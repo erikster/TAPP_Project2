@@ -18,7 +18,7 @@ public class DebrisManager {
 	
 	public DebrisManager(CollisionLayer cl) {
 		this.cl = cl;
-		this.asteroids = new ArrayList<>();
+		this.asteroids = new ArrayList<>(MAX_ROIDS);
 		this.timeSince = 0;
 		this.rand = new Random();
 	}

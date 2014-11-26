@@ -32,7 +32,7 @@ public class World {
 	public World() {
 		this.cl       = new CollisionLayer();
 		this.debris   = new DebrisManager(cl);
-		this.mainShip = PlayerShip.makeShip(0f, 0f);
+		this.mainShip = PlayerShip.makeShip(0f, 0f, cl);
 		this.aiships  = new AIManager(cl, mainShip);		
 		mainShip.getPhys().getCImg().addTo(cl);	
 	}
@@ -76,6 +76,7 @@ public class World {
 		g.translate(midx - 320f, midy - 240f); // undo the translation
 		
 		g.drawString("Use the arrow keys to move.", 10f, 10f);
+		g.drawString("Use the space key to fire!", 10f, 30f);
 		g.drawString("HP: " + mainShip.getHP(), 10, 460);
 		
 		if (DEBUG_DISP) { // display debugging information
