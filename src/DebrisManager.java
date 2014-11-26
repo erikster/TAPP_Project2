@@ -79,6 +79,9 @@ public class DebrisManager {
 		float x = pos.x + distance * (float) Math.cos(theta);
 		float y = pos.y + distance * (float) Math.sin(theta);
 		Asteroid result = Asteroid.makeAsteroid(x, y);
+		float rand_angle = float2pi * rand.nextFloat();
+		float rand_speed = 2f * rand.nextFloat();
+		result.getPhys().accelerate((float) Math.cos(rand_angle) * rand_speed, (float) Math.sin(rand_angle) * rand_speed);
 		result.getPhys().getCImg().addTo(cl);
 		asteroids.add(result);
 	}
