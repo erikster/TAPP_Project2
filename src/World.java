@@ -45,17 +45,19 @@ public class World {
 	public void update(GameContainer gc, int i) throws SlickException {
 		mainShip.update(gc, i);
 		debris.update(gc, i, mainShip.getPhys().getPosition(), mainShip.getPhys().getVelAngle());
-		aiships.update(gc, i);
+		aiships.update(gc, i, mainShip.getPhys().getPosition());
 		cl.notifyCollisions();
 		
 		if (gc.getInput().isKeyPressed(Input.KEY_D)) {
 			DEBUG_DISP = !DEBUG_DISP;
 		}
 		
-		if (mainShip.getHP() < 0 || gc.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+		if (gc.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
 			gc.exit();
 		}
 	}
+	
+	public int shipHP() { return mainShip.getHP(); }
 	
 	/**
 	 * Renders our game onto the screen

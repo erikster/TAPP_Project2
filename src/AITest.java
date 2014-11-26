@@ -126,6 +126,11 @@ public class AITest extends StellarObject{
 		public void collide(Collider c) { 
 			c.inflictDamage(1); // inflicts damage on object it collides with
 		}
+		
+		@Override
+		public void inflictDamage(int dam){
+			ai.HP -= dam;
+		}
 	}
 
 }

@@ -17,7 +17,6 @@ public class PlayerShip extends StellarObject{
 	
 	private static final float THRUSTER_ACCELERATION = .05f; //thruster acceleration in px/frame^2
 	private static final float ROTATION = .05f; //rotational displacement in rad/frame
-	protected int hp = 1;
 
 	//------------------
 	//--| 'structors |--
@@ -25,6 +24,7 @@ public class PlayerShip extends StellarObject{
 
 	private PlayerShip(Physics phys){
 		super(phys);
+		HP = 1;
 	}
 
 	public static PlayerShip makeShip(float x, float y){
@@ -59,7 +59,7 @@ public class PlayerShip extends StellarObject{
 	@Override
 	public void update(GameContainer gc, int time_passed_ms){
 
-		if (hp <= 0){
+		if (HP <= 0){
 			destroy();
 		}
 		
