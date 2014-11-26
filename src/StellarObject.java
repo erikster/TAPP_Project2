@@ -29,6 +29,7 @@ public abstract class StellarObject{
 	 */
 	public StellarObject(Physics phys){
 		this.phys = phys;
+		HP = 1;
 	}
 
 	/** Destroys this, removing it from any/all push-notification systems */
