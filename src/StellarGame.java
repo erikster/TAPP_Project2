@@ -37,6 +37,6 @@ public class StellarGame extends StateBasedGame {
 		this.ingame = new InGameState();
 		addState(mainMenu);
 		addState(ingame);
-		enterState(ingame.getID());
+		enterState(mainMenu.getID());
 	}
 }

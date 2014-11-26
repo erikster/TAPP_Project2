@@ -52,10 +52,12 @@ public class World {
 			DEBUG_DISP = !DEBUG_DISP;
 		}
 		
-		if (mainShip.getHP() < 0 || gc.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+		if (gc.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
 			gc.exit();
 		}
 	}
+	
+	public int shipHP() { return mainShip.getHP(); }
 	
 	/**
 	 * Renders our game onto the screen
