@@ -7,6 +7,7 @@
  */
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.Graphics;
@@ -17,17 +18,21 @@ public class PlayerShip extends StellarObject{
 	
 	private static final float THRUSTER_ACCELERATION = .05f; //thruster acceleration in px/frame^2
 	private static final float ROTATION = .05f; //rotational displacement in rad/frame
+	private CollisionLayer cl;
+	private BulletManager bm;
 
 	//------------------
 	//--| 'structors |--
 	//------------------
 
-	private PlayerShip(Physics phys){
+	private PlayerShip(Physics phys, CollisionLayer cl) {
 		super(phys);
+		this.cl = cl;
 		HP = 1;
+		bm = new BulletManager(cl);
 	}
 
-	public static PlayerShip makeShip(float x, float y){
+	public static PlayerShip makeShip(float x, float y, CollisionLayer cl) {
 		//make centroid
 		Vector2f centroid = new Vector2f(x, y);
 
@@ -43,7 +48,7 @@ public class PlayerShip extends StellarObject{
 		GraphicalImage gimg = new GraphicalImage(pol);
 
 		//make the PlayerShip
-		PlayerShip ps = new PlayerShip(new _PlayerShipPhysics(centroid, cimg, gimg));
+		PlayerShip ps = new PlayerShip(new _PlayerShipPhysics(centroid, cimg, gimg), cl);
 
 		//close circular references
 		pc.ps = ps;
@@ -57,7 +62,7 @@ public class PlayerShip extends StellarObject{
 
 	/** Performs framewise updates; should be propegated from the base Slick2D game object */
 	@Override
-	public void update(GameContainer gc, int time_passed_ms){
+	public void update(GameContainer gc, int time_passed_ms) {
 
 		if (HP <= 0){
 			destroy();
@@ -66,25 +71,48 @@ public class PlayerShip extends StellarObject{
 		//keyboard input
 		Input in = gc.getInput();
 
-		if (in.isKeyDown(Input.KEY_LEFT)){
+		if (in.isKeyDown(Input.KEY_LEFT)) {
 			getPhys().rotate(-ROTATION);
 		}
 
-		if (in.isKeyDown(Input.KEY_RIGHT)){
+		if (in.isKeyDown(Input.KEY_RIGHT)) {
 			getPhys().rotate(ROTATION);
 		}
 
-		if (in.isKeyDown(Input.KEY_UP)){
+		if (in.isKeyDown(Input.KEY_UP)) {
 			getPhys().accelerateAligned(0f, THRUSTER_ACCELERATION);
 		}
 
 		if (in.isKeyDown(Input.KEY_DOWN)){
 			getPhys().setFriction(_PlayerShipPhysics.FRICTION_BRAKING);
-		}else{
+		} else {
 			getPhys().setFriction(_PlayerShipPhysics.FRICTION_DEFAULT);
 		}
+		
+		if (in.isKeyPressed(Input.KEY_SPACE)) {
+			fire();
+		}
+		
+		bm.update(gc, time_passed_ms);
 
 		super.update(gc, time_passed_ms);
+	}
+	
+	@Override
+	public void render(GameContainer gc, Graphics g) throws SlickException {
+		super.render(gc, g);
+		bm.render(gc, g);
+	}
+	
+	private void fire() {
+		float x     = getPhys().getPosition().x;
+		float y     = getPhys().getPosition().y;
+		float angle = getPhys().getRotation();
+		x += (float) 10 * Math.cos(angle);
+		y += (float) 10 * Math.sin(angle);
+		float speed = getPhys().getSpeed();
+		
+		bm.requestBullet(x, y, angle, speed + 10f);
 	}
 
 	//---------------
