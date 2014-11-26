@@ -15,6 +15,12 @@ public class MenuState extends BasicGameState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		startGame = false;
 		quit = false;
+		gc.setMouseGrabbed(false);
+	}
+	
+	@Override
+	public void leave(GameContainer gc, StateBasedGame sbg) {
+		gc.setMouseGrabbed(true);
 	}
 	
 	@Override
