@@ -101,7 +101,7 @@ public class AIMark2 extends StellarObject{
 		 */
 	
 		Vector2f target_vel = seek();
-		target_vel.add(wander(5.8f));
+		target_vel.add(wander(4.8f));
 
 		/* after this point we calculate the difference between our target velocity and the 
 		   current velocity, and attempt to accelerate in the direction of the difference. */

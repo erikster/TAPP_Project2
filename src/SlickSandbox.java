@@ -53,7 +53,6 @@ public class SlickSandbox extends BasicGame
 	PlayerShip p;
 	AITest ai;
 	AIMark2 aiM2;
-	Asteroid as;
 
 	ArrayList<CollisionImage> cimgs = new ArrayList<CollisionImage>();
 
@@ -104,9 +103,7 @@ public class SlickSandbox extends BasicGame
 	public void init(GameContainer gc) throws SlickException {
 		p = PlayerShip.makeShip(100f, 100f);
 		p.getPhys().getCImg().addTo(cl);
-		as = Asteroid.makeAsteroid(250f, 250f);
-		as.getPhys().getCImg().addTo(cl);
-		ai = AITest.makeAI(200f, 200f, p, as);
+		ai = AITest.makeAI(200f, 200f, p);
 		ai.getPhys().getCImg().addTo(cl);
 		aiM2 = AIMark2.makeAI(200f, 200f, p);
 		aiM2.getPhys().getCImg().addTo(cl);
@@ -135,7 +132,6 @@ public class SlickSandbox extends BasicGame
 		p.update(gc, time_passed_ms);
 		ai.update(gc, time_passed_ms);
 		aiM2.update(gc, time_passed_ms);
-		as.update(gc, time_passed_ms);
 
 		cl.notifyCollisions();
 	}
@@ -149,7 +145,6 @@ public class SlickSandbox extends BasicGame
 		p.render(gc, g);
 		ai.render(gc, g);
 		aiM2.render(gc,g);
-		as.render(gc, g);
 
 		for (CollisionImage cimg : cimgs){
 			cimg.render(gc, g);
