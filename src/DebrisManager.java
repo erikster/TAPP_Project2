@@ -12,8 +12,8 @@ public class DebrisManager {
 	private int timeSince;
 	private Random rand;
 	
-	private static final int MAX_ROIDS      = 30;   // max amount of asteroids to track
-	private static final int INTERVAL_MS    = 250;  // ~0.25 seconds
+	private static final int MAX_ROIDS      = 30;          // max amount of asteroids to track
+	private static final int INTERVAL_MS    = 250;         // ~0.25 seconds
 	private static final float MAX_DIST_SQ  = 800f * 800f; // max distance before asteroids get wrecked
 	
 	public DebrisManager(CollisionLayer cl) {
