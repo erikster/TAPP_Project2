@@ -8,6 +8,7 @@ public class HighScoresState extends BasicGameState {
 	private List<Long> highScores;
 	private boolean gotFile;
 	private File scoreFile;
+	private long newScore;
 	
 	public HighScoresState() {
 		Scanner sc = null;
@@ -46,11 +47,8 @@ public class HighScoresState extends BasicGameState {
 	}
 	
 	public void enter(GameContainer gc, StateBasedGame sbg, long score) {
-		
-	}
-	
-	public void leave(GameContainer gc, StateBasedGame sbg) {
-		
+		this.newScore = score;
+		super.enter(gc, sbg);
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int i) throws SlickException {

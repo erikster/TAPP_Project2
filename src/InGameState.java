@@ -21,8 +21,10 @@ public class InGameState extends BasicGameState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int i) throws SlickException {
 		gameWorld.update(gc, i);
-		if (gameWorld.shipHP() < 1)
-			sbg.enterState(0); // go to menustate
+		if (gameWorld.shipHP() < 1) {
+			gameWorld.getFinalScore();
+			sbg.enterState(2); // go to high-scores state
+		}
 	}
 	
 	@Override

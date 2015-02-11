@@ -62,6 +62,8 @@ public class World {
 	
 	public int shipHP() { return mainShip.getHP(); }
 	
+	public long getFinalScore() { return ScoreManager.getScore(); }
+	
 	/**
 	 * Renders our game onto the screen
 	 * Throws a SlickException
