@@ -15,10 +15,11 @@ public class HighScoresState extends BasicGameState {
 		try {
 			scoreFile = new File("SFhighscores.txt");
 			if (!scoreFile.exists()) {
-				PrintWriter pw = new PrintWriter("SFhighscores.txt");
+				PrintWriter pw = new PrintWriter(new FileOutputStream("SFhighscores.txt", false));
 				pw.print("0");
 				for (int i = 0; i < 9; i++)
 					pw.print(" 0");
+				pw.close();
 			}
 			sc = new Scanner(scoreFile).useDelimiter("\\s");
 			gotFile = true;
@@ -56,7 +57,7 @@ public class HighScoresState extends BasicGameState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		g.drawString("High Scores! Press SPACE to go to the menu.", 10, 10);
-		int y = 30;
+		int y = 50;
 		for (int i = 0; i < 10; i++) {
 			g.drawString((i + 1) + ": " + highScores.get(i), 10, y);
 			y += 20;
@@ -73,6 +74,16 @@ public class HighScoresState extends BasicGameState {
 	@Override
 	public void leave(GameContainer gc, StateBasedGame sbg) {
 		// write data
+		try {
+			PrintWriter pw = new PrintWriter(new FileOutputStream("SFhighscores.txt", false));
+			pw.print(highScores.get(0));
+			for (int i = 1; i < 10; i++) {
+				pw.print(" " + highScores.get(i));
+			}
+			pw.close();
+		} catch (IOException ioex) {
+			ioex.printStackTrace();
+		}
 	}
 	
 	@Override
