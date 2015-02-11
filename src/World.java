@@ -25,6 +25,7 @@ public class World {
 	private CollisionLayer cl;
 	private DebrisManager debris;
 	private AIManager aiships;
+	private ScoreManager scoremgr;
 	
 	private static boolean DEBUG_DISP = false;
 	
@@ -33,7 +34,8 @@ public class World {
 		this.cl       = new CollisionLayer();
 		this.debris   = new DebrisManager(cl);
 		this.mainShip = PlayerShip.makeShip(0f, 0f, cl);
-		this.aiships  = new AIManager(cl, mainShip);		
+		this.aiships  = new AIManager(cl, mainShip);
+		this.scoremgr = new ScoreManager();
 		mainShip.getPhys().getCImg().addTo(cl);	
 	}
 	
@@ -46,6 +48,7 @@ public class World {
 		mainShip.update(gc, i);
 		debris.update(gc, i, mainShip.getPhys().getPosition(), mainShip.getPhys().getVelAngle());
 		aiships.update(gc, i, mainShip.getPhys().getPosition());
+		scoremgr.update(gc, i);
 		cl.notifyCollisions();
 		
 		if (gc.getInput().isKeyPressed(Input.KEY_D)) {
