@@ -46,21 +46,41 @@ public class HighScoresState extends BasicGameState {
 		
 	}
 	
-	public void enter(GameContainer gc, StateBasedGame sbg, long score) {
-		this.newScore = score;
-		super.enter(gc, sbg);
-	}
-
+	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int i) throws SlickException {
-		
+		if (gc.getInput().isKeyPressed(Input.KEY_SPACE)) {
+			sbg.enterState(0);
+		}
 	}
 	
+	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		
+		g.drawString("High Scores! Press SPACE to go to the menu.", 10, 10);
+		int y = 30;
+		for (int i = 0; i < 10; i++) {
+			g.drawString((i + 1) + ": " + highScores.get(i), 10, y);
+			y += 20;
+		}
+	}
+	
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		highScores.add(newScore);
+		Collections.sort(highScores, Collections.reverseOrder());
+		highScores.remove(10); // remove 11th item
+	}
+	
+	@Override
+	public void leave(GameContainer gc, StateBasedGame sbg) {
+		// write data
 	}
 	
 	@Override
 	public int getID() {
 		return 2;
+	}
+	
+	public void setScore(long score) {
+		newScore = score;
 	}
 }

@@ -15,6 +15,7 @@ public class ScoreManager {
 	}
 	
 	public void update(GameContainer gc, int delta_ms) {
+		counter += delta_ms;
 		if (counter > TIME_SCORE_INT_MS) {
 			currScore += TIME_SCORE_INC;
 			counter = 0;

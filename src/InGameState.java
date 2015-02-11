@@ -3,9 +3,11 @@ import org.newdawn.slick.state.*;
 
 public class InGameState extends BasicGameState {
 	private World gameWorld;
+	private HighScoresState hss;
 	
-	public InGameState() {
+	public InGameState(HighScoresState hss) {
 		gameWorld = null;
+		this.hss = hss;
 	}
 	
 	@Override
@@ -22,7 +24,7 @@ public class InGameState extends BasicGameState {
 	public void update(GameContainer gc, StateBasedGame sbg, int i) throws SlickException {
 		gameWorld.update(gc, i);
 		if (gameWorld.shipHP() < 1) {
-			gameWorld.getFinalScore();
+			hss.setScore(gameWorld.getFinalScore());
 			sbg.enterState(2); // go to high-scores state
 		}
 	}

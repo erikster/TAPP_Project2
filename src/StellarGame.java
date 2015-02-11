@@ -34,9 +34,9 @@ public class StellarGame extends StateBasedGame {
 	
 	@Override
 	public void initStatesList(GameContainer gc) {
-		this.mainMenu = new MenuState();
-		this.ingame = new InGameState();
 		this.hiscores = new HighScoresState();
+		this.mainMenu = new MenuState();
+		this.ingame = new InGameState(hiscores);
 		addState(mainMenu);
 		addState(ingame);
 		addState(hiscores);
