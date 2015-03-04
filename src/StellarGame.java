@@ -21,6 +21,7 @@ public class StellarGame extends StateBasedGame {
 	/// fields
 	private MenuState mainMenu;
 	private InGameState ingame;
+	private HighScoresState hiscores;
 	
 	/// constructors
 	/**
@@ -33,10 +34,12 @@ public class StellarGame extends StateBasedGame {
 	
 	@Override
 	public void initStatesList(GameContainer gc) {
+		this.hiscores = new HighScoresState();
 		this.mainMenu = new MenuState();
-		this.ingame = new InGameState();
+		this.ingame = new InGameState(hiscores);
 		addState(mainMenu);
 		addState(ingame);
+		addState(hiscores);
 		enterState(mainMenu.getID());
 	}
 }
