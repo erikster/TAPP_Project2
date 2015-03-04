@@ -120,7 +120,8 @@ public class PlayerShip extends StellarObject{
 		bm.update(gc, time_passed_ms);
 		
 		emitter.setPosition(getPhys().getPosition().x, getPhys().getPosition().y);
-
+		thrusters.update(time_passed_ms);
+		
 		super.update(gc, time_passed_ms);
 	}
 	
@@ -128,6 +129,7 @@ public class PlayerShip extends StellarObject{
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		super.render(gc, g);
 		bm.render(gc, g);
+		thrusters.render();
 	}
 	
 	private void fire() {
