@@ -37,7 +37,8 @@ public class PlayerShip extends StellarObject{
 		bm = new BulletManager(cl);
 		try {
 			Image particle = new Image("media/particle_flame.png", false);
-			thrusters = new ParticleSystem(particle, 150);
+			thrusters = new ParticleSystem(particle, 1500);
+			thrusters.setRemoveCompletedEmitters(false);
 		} catch (SlickException ex) {
 			ex.printStackTrace();
 			System.err.println("Couldn't load particle image, exiting.");
@@ -105,6 +106,9 @@ public class PlayerShip extends StellarObject{
 
 		if (in.isKeyDown(Input.KEY_UP)) {
 			getPhys().accelerateAligned(0f, THRUSTER_ACCELERATION);
+			thrusters.getEmitter(0).setEnabled(true);
+		} else {
+			thrusters.getEmitter(0).setEnabled(false);
 		}
 
 		if (in.isKeyDown(Input.KEY_DOWN)){
@@ -119,7 +123,10 @@ public class PlayerShip extends StellarObject{
 		
 		bm.update(gc, time_passed_ms);
 		
-		emitter.setPosition(getPhys().getPosition().x, getPhys().getPosition().y);
+		emitter.setPosition(-getPhys().getPosition().x, -getPhys().getPosition().y);
+		emitter.angularOffset.setValue(getPhys().getVelAngle());
+		emitter.speed.setMax(getPhys().getSpeed());
+		emitter.speed.setMin(getPhys().getSpeed());
 		thrusters.update(time_passed_ms);
 		
 		super.update(gc, time_passed_ms);
@@ -127,9 +134,9 @@ public class PlayerShip extends StellarObject{
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
+		thrusters.render();
 		super.render(gc, g);
 		bm.render(gc, g);
-		thrusters.render();
 	}
 	
 	private void fire() {

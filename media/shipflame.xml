@@ -7,7 +7,7 @@
 	<growthFactor  value="-0.2" />
 	<yOffset       enabled="true" min="5.0"   max="6.0" />
 	<xOffset       enabled="true" min="-1.0"  max="1.0" />
-	<speed         enabled="true" min="1.0"   max="10.0" />
+	<speed         enabled="true" min="0.0"   max="0.0" />
 	<spread        value="360.0" />
 	<angularOffset value="180.0" />
 	<startAlpha    value="255.0" />
