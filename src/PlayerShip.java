@@ -17,7 +17,7 @@ import org.newdawn.slick.particles.*;
 import org.newdawn.slick.SlickException;
 import java.io.*;
 
-public class PlayerShip extends StellarObject{
+public class PlayerShip extends StellarObject {
 	
 	private static final float THRUSTER_ACCELERATION = .05f; //thruster acceleration in px/frame^2
 	private static final float ROTATION = .05f; //rotational displacement in rad/frame

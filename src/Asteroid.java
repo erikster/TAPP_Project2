@@ -19,6 +19,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.fills.*;
 
 public class Asteroid extends StellarObject {
+	public Image img;
 	
 	/// Constructors
 	/**
@@ -35,21 +36,30 @@ public class Asteroid extends StellarObject {
 
 		//make cimg
 		_AsteroidCollider ac = new _AsteroidCollider();
-		Circle cir = new Circle(x, y, 20f);
+		Circle cir = new Circle(x, y, 16f);
 		
 		CollisionImage cimg = new CollisionImage(cir, ac);
 		GraphicalImage gimg = new GraphicalImage(cir, new GradientFill(0.0f, 0.0f, Color.darkGray, 1.0f, 1.0f, Color.darkGray));
-
+		
 		//make the Asteroid
 		Asteroid as = new Asteroid(new _AsteroidPhysics(centroid, cimg, gimg));
 
 		//close circular references
 		ac.ast = as;
+		
+		// assign image
+		as.img = DebrisManager.asteroidImg;
 
 		return as;
 	}
 	
 	/// Methods
+	
+	@Override
+	public void render(GameContainer gc, Graphics g) throws SlickException {
+		g.drawImage(img, getPhys().getPosition().x - 20, getPhys().getPosition().y - 20);
+		// super.render(gc, g);
+	}
 	
 	private static class _AsteroidPhysics extends Physics {
 		public _AsteroidPhysics(
