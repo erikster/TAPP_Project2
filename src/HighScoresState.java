@@ -9,6 +9,7 @@ public class HighScoresState extends BasicGameState {
 	private boolean gotFile;
 	private File scoreFile;
 	private long newScore;
+	private Image background;
 	
 	public HighScoresState() {
 		Scanner sc = null;
@@ -40,11 +41,12 @@ public class HighScoresState extends BasicGameState {
 				highScores.add(0L);
 			}
 		}
+		background = null;
 	}
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		
+		background = new Image("media/hs_bg.png");
 	}
 	
 	@Override
@@ -56,12 +58,15 @@ public class HighScoresState extends BasicGameState {
 	
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		g.drawString("High Scores! Press SPACE to go to the menu.", 10, 10);
+		g.drawImage(background, 0, 0);
+		g.drawString("High Scores!", 10, 20);
+		g.drawString("Press SPACE to go to the main menu.", 10, 460);
 		int y = 50;
-		for (int i = 0; i < 10; i++) {
-			g.drawString((i + 1) + ": " + highScores.get(i), 10, y);
+		for (int i = 0; i < 9; i++) {
+			g.drawString((i + 1) + ":  " + highScores.get(i), 10, y);
 			y += 20;
 		}
+		g.drawString((10) + ": " + highScores.get(9), 10, y);
 	}
 	
 	@Override
