@@ -191,7 +191,7 @@ public abstract class Physics{
 	/** Returns gimg, as it was passed to the constructor */
 	public GraphicalImage getGImg() { return gimg; }
 
-	public void setFriction(float f){ friction = f; }
-	public float getFriction(){return friction;}
+	public void setFriction(float f) { friction = f; }
+	public float getFriction() { return friction; }
 
 }

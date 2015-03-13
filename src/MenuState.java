@@ -5,10 +5,11 @@ import org.newdawn.slick.state.*;
 public class MenuState extends BasicGameState {
 	private Rectangle r1, r2;
 	private boolean startGame, quit;
+	private Image background;
 	
 	public MenuState() {
-		r1 = new Rectangle(220, 250, 200, 70);
-		r2 = new Rectangle(220, 350, 200, 70);
+		r1 = new Rectangle(220, 160, 200, 70);
+		r2 = new Rectangle(220, 260, 200, 70);
 	}
 	
 	@Override
@@ -25,7 +26,7 @@ public class MenuState extends BasicGameState {
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		
+		background = new Image("media/MainMenu.png");
 	}
 	
 	@Override
@@ -39,10 +40,7 @@ public class MenuState extends BasicGameState {
 	
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		// draw title - can replace with image later
-		g.setColor(Color.white);
-		g.drawString("WELCOME TO STELLAR FUGITIVE!", 200, 100);
-		g.drawString("PRESS THE START BUTTON TO PLAY!", 190, 120);
+		g.drawImage(background, 0, 0);
 		
 		// draw buttons
 		g.setColor(Color.blue);
@@ -51,8 +49,8 @@ public class MenuState extends BasicGameState {
 		
 		// draw labels of buttons
 		g.setColor(Color.white);
-		g.drawString("START", 295, 280);
-		g.drawString("QUIT", 300, 380);
+		g.drawString("START", 295, r1.getY() + 27);
+		g.drawString("QUIT", 300, r2.getY() + 27);
 	}
 	
 	@Override

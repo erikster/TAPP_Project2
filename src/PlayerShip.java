@@ -3,7 +3,7 @@
  *
  * A ship, controlled by the player (via the arrow keys)
  *
- * Author: Wesley Gydé
+ * Authors: Wesley Gydé, Erik Steringer
  */
 
 import org.newdawn.slick.GameContainer;
@@ -12,14 +12,19 @@ import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.particles.*;
 import org.newdawn.slick.SlickException;
+import java.io.*;
 
-public class PlayerShip extends StellarObject{
+public class PlayerShip extends StellarObject {
 	
 	private static final float THRUSTER_ACCELERATION = .05f; //thruster acceleration in px/frame^2
 	private static final float ROTATION = .05f; //rotational displacement in rad/frame
 	private CollisionLayer cl;
 	private BulletManager bm;
+	private ParticleSystem thrusters;
+	private ConfigurableEmitter emitter;
 
 	//------------------
 	//--| 'structors |--
@@ -30,6 +35,26 @@ public class PlayerShip extends StellarObject{
 		this.cl = cl;
 		HP = 1;
 		bm = new BulletManager(cl);
+		try {
+			Image particle = new Image("media/particle_flame.png", false);
+			thrusters = new ParticleSystem(particle, 1500);
+			thrusters.setRemoveCompletedEmitters(false);
+		} catch (SlickException ex) {
+			ex.printStackTrace();
+			System.err.println("Couldn't load particle image, exiting.");
+			System.exit(0);
+		}
+		try {
+			File particleData = new File("media/shipflame.xml");
+			emitter = ParticleIO.loadEmitter(particleData);
+			emitter.setPosition(getPhys().getPosition().x, getPhys().getPosition().y);
+			thrusters.addEmitter(emitter);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			System.err.println("Couldn't load particle file, exiting.");
+			System.exit(0);
+		}
+		thrusters.setBlendingMode(ParticleSystem.BLEND_ADDITIVE);
 	}
 
 	public static PlayerShip makeShip(float x, float y, CollisionLayer cl) {
@@ -81,6 +106,9 @@ public class PlayerShip extends StellarObject{
 
 		if (in.isKeyDown(Input.KEY_UP)) {
 			getPhys().accelerateAligned(0f, THRUSTER_ACCELERATION);
+			thrusters.getEmitter(0).setEnabled(true);
+		} else {
+			thrusters.getEmitter(0).setEnabled(false);
 		}
 
 		if (in.isKeyDown(Input.KEY_DOWN)){
@@ -94,12 +122,19 @@ public class PlayerShip extends StellarObject{
 		}
 		
 		bm.update(gc, time_passed_ms);
-
+		
+		emitter.setPosition(-getPhys().getPosition().x, -getPhys().getPosition().y);
+		emitter.angularOffset.setValue(getPhys().getVelAngle());
+		emitter.speed.setMax(getPhys().getSpeed());
+		emitter.speed.setMin(getPhys().getSpeed());
+		thrusters.update(time_passed_ms);
+		
 		super.update(gc, time_passed_ms);
 	}
 	
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
+		thrusters.render();
 		super.render(gc, g);
 		bm.render(gc, g);
 	}

@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics.*;
 import org.newdawn.slick.Input;
@@ -11,6 +12,14 @@ public class DebrisManager {
 	private CollisionLayer cl;
 	private int timeSince;
 	private Random rand;
+	public static final Image asteroidImg = createImg();
+	private static Image createImg() {
+		try {
+			return new Image("media/asteroid.png");
+		} catch (Exception ex) {
+			throw new Error(ex);
+		}
+	}
 	
 	private static final int MAX_ROIDS      = 30;          // max amount of asteroids to track
 	private static final int INTERVAL_MS    = 250;         // ~0.25 seconds
